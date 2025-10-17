@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx nuxt dev --dotenv .env ",
+    "dev": "npx nuxt dev --dotenv .env --port 3000",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
