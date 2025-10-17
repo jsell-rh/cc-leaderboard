@@ -20,6 +20,7 @@
     ".output/",
     "web/**/*.vue",
     "web/**/*.ts",
+    "cli/**/*.ts",
     "**/*.vue",
     "**/*.d.ts"
   ]

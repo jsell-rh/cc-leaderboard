@@ -12,7 +12,7 @@ export async function loginCommand() {
 
   try {
     // Open browser to auth page
-    await open(`${config.apiUrl}/auth/github`)
+    await open(`${config.apiUrl}/api/auth/github`)
 
     spinner.succeed('Browser opened')
 
@@ -27,7 +27,7 @@ export async function loginCommand() {
     const readline = await import('readline')
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     })
 
     const apiKey = await new Promise<string>((resolve) => {
@@ -46,8 +46,16 @@ export async function loginCommand() {
 
     console.log(chalk.green('\n✓ Successfully authenticated!'))
     console.log(chalk.gray('\nNext steps:'))
-    console.log(chalk.white('  • Run ') + chalk.cyan('ccleaderboard submit') + chalk.white(' to submit your usage'))
-    console.log(chalk.white('  • Run ') + chalk.cyan('ccleaderboard config --auto-submit daily') + chalk.white(' to enable auto-submit'))
+    console.log(
+      chalk.white('  • Run ') +
+        chalk.cyan('ccleaderboard submit') +
+        chalk.white(' to submit your usage')
+    )
+    console.log(
+      chalk.white('  • Run ') +
+        chalk.cyan('ccleaderboard config --auto-submit daily') +
+        chalk.white(' to enable auto-submit')
+    )
     console.log()
   } catch (error) {
     spinner.fail('Authentication failed')

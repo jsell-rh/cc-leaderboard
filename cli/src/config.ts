@@ -13,9 +13,9 @@ export interface Config {
 const config = new Conf<Config>({
   projectName: 'ccleaderboard',
   defaults: {
-    apiUrl: 'http://localhost:3000',
-    autoSubmit: 'off'
-  }
+    apiUrl: 'http://localhost:3001',
+    autoSubmit: 'off',
+  },
 })
 
 export function getConfig(): Config {
