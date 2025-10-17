@@ -1,5 +1,44 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
+    <!-- CLI Welcome Banner -->
+    <div
+      v-if="route.query.from === 'cli'"
+      class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-lg border border-purple-300 p-6 text-white"
+    >
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-xl font-bold mb-2">Welcome! You're almost done</h3>
+          <p class="text-purple-100 mb-3">
+            Your GitHub authentication was successful. Now copy your API key below and paste it into
+            your terminal to complete the setup.
+          </p>
+          <div class="flex items-center gap-2 text-sm text-purple-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>Click the "Show" button below, then click "Copy" to copy your API key</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <div class="flex items-center gap-4">
@@ -277,6 +316,7 @@ definePageMeta({
   middleware: 'auth',
 })
 
+const route = useRoute()
 const { data: userData } = await useFetch<UserData>('/api/me')
 
 const showKey = ref(false)

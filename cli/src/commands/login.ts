@@ -8,7 +8,7 @@ export async function loginCommand() {
 
   console.log(chalk.bold('\n🔐 Login to Claude Code Leaderboard\n'))
 
-  const authUrl = `${config.apiUrl}/api/auth/github`
+  const authUrl = `${config.apiUrl}/api/auth/github?source=cli`
   const spinner = ora('Opening browser for authentication...').start()
 
   try {
@@ -21,8 +21,8 @@ export async function loginCommand() {
     console.log(chalk.gray(`   If the browser didn't open, visit: ${authUrl}\n`))
     console.log(chalk.white('  1. Sign in with GitHub'))
     console.log(chalk.white('  2. Authorize the application'))
-    console.log(chalk.white('  3. Go to Settings page'))
-    console.log(chalk.white('  4. Copy your API key'))
+    console.log(chalk.white('  3. Copy your API key from the Settings page'))
+    console.log(chalk.white('  4. Paste it below'))
     console.log()
 
     // Wait for user to paste API key
