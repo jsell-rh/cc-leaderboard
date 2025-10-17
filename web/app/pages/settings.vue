@@ -198,12 +198,13 @@
 
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
+import type { UserData } from '~/types/api'
 
 definePageMeta({
   middleware: 'auth'
 })
 
-const { data: userData } = await useFetch('/api/me')
+const { data: userData } = await useFetch<UserData>('/api/me')
 
 const showKey = ref(false)
 const copied = ref(false)

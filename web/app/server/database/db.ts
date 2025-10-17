@@ -2,6 +2,8 @@ import { drizzle } from 'drizzle-orm/better-sqlite3'
 import Database from 'better-sqlite3'
 import * as schema from './schema'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import fs from 'fs'
+import path from 'path'
 
 let db: ReturnType<typeof drizzle> | null = null
 
@@ -10,8 +12,6 @@ export function getDatabase() {
     const dbPath = process.env.DATABASE_PATH || './data/leaderboard.db'
 
     // Ensure directory exists
-    const fs = require('fs')
-    const path = require('path')
     const dir = path.dirname(dbPath)
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
@@ -32,5 +32,8 @@ export function getDatabase() {
 
   return db
 }
+
+// Alias for Nuxt auto-import compatibility
+export const useDatabase = getDatabase
 
 export { schema }

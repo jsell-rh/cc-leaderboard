@@ -201,6 +201,7 @@
 
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
+import type { LeaderboardResponse } from '~/types/api'
 
 const { user } = useUserSession()
 
@@ -229,7 +230,7 @@ const periods = [
   }
 ]
 
-const { data, pending, error, refresh } = await useFetch(() => `/api/leaderboard/${period.value}`, {
+const { data, pending, error, refresh } = await useFetch<LeaderboardResponse>(() => `/api/leaderboard/${period.value}`, {
   watch: [period]
 })
 
