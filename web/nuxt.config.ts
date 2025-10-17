@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 
   modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', 'nuxt-auth-utils'],
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/app/assets/css/main.css'],
 
   shadcn: {
     prefix: '',
