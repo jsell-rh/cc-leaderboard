@@ -7,14 +7,30 @@ import { setConfig } from '../config.js'
 
 const execAsync = promisify(exec)
 
+interface CcusageModelBreakdown {
+  modelName: string
+  inputTokens: number
+  outputTokens: number
+  cacheCreationTokens?: number
+  cacheReadTokens?: number
+  totalTokens: number
+  totalCost: number
+}
+
 interface CcusageDay {
   date: string
-  costUSD: number
-  models: Record<string, {
-    costUSD: number
-    inputTokens: number
-    outputTokens: number
-  }>
+  inputTokens: number
+  outputTokens: number
+  cacheCreationTokens?: number
+  cacheReadTokens?: number
+  totalTokens: number
+  totalCost: number
+  modelsUsed: string[]
+  modelBreakdowns: CcusageModelBreakdown[]
+}
+
+interface CcusageResponse {
+  daily: CcusageDay[]
 }
 
 export async function submitCommand(options: { date?: string }) {
@@ -28,10 +44,10 @@ export async function submitCommand(options: { date?: string }) {
 
     // Run ccusage to get data
     const { stdout } = await execAsync('npx ccusage@latest daily --json')
-    const usageData: CcusageDay[] = JSON.parse(stdout)
+    const usageData: CcusageResponse = JSON.parse(stdout)
 
     // Find data for target date
-    const dayData = usageData.find(d => d.date === targetDate)
+    const dayData = usageData.daily.find((d) => d.date === targetDate)
 
     if (!dayData) {
       spinner.fail(`No usage data found for ${targetDate}`)
@@ -41,15 +57,10 @@ export async function submitCommand(options: { date?: string }) {
 
     spinner.text = 'Calculating costs and tokens...'
 
-    // Calculate totals
-    let totalInputTokens = 0
-    let totalOutputTokens = 0
+    // Build model breakdown from the modelBreakdowns array
     const modelBreakdown: Record<string, number> = {}
-
-    for (const [model, data] of Object.entries(dayData.models)) {
-      totalInputTokens += data.inputTokens
-      totalOutputTokens += data.outputTokens
-      modelBreakdown[model] = data.costUSD
+    for (const breakdown of dayData.modelBreakdowns) {
+      modelBreakdown[breakdown.modelName] = breakdown.totalCost
     }
 
     spinner.text = 'Submitting to leaderboard...'
@@ -57,10 +68,10 @@ export async function submitCommand(options: { date?: string }) {
     // Submit to API
     const result = await submitUsage({
       date: targetDate,
-      dailyCost: dayData.costUSD,
+      dailyCost: dayData.totalCost,
       modelBreakdown,
-      inputTokens: totalInputTokens,
-      outputTokens: totalOutputTokens
+      inputTokens: dayData.inputTokens,
+      outputTokens: dayData.outputTokens,
     })
 
     spinner.succeed(result.updated ? 'Updated existing submission' : 'Submitted new data')
@@ -71,11 +82,10 @@ export async function submitCommand(options: { date?: string }) {
     console.log(chalk.green('\n✓ Successfully submitted!'))
     console.log(chalk.gray('\nSubmission details:'))
     console.log(chalk.white(`  Date: ${targetDate}`))
-    console.log(chalk.white(`  Cost: $${dayData.costUSD.toFixed(2)}`))
-    console.log(chalk.white(`  Input tokens: ${totalInputTokens.toLocaleString()}`))
-    console.log(chalk.white(`  Output tokens: ${totalOutputTokens.toLocaleString()}`))
+    console.log(chalk.white(`  Cost: $${dayData.totalCost.toFixed(2)}`))
+    console.log(chalk.white(`  Input tokens: ${dayData.inputTokens.toLocaleString()}`))
+    console.log(chalk.white(`  Output tokens: ${dayData.outputTokens.toLocaleString()}`))
     console.log()
-
   } catch (error) {
     spinner.fail('Submission failed')
     console.error(chalk.red('\n' + (error as Error).message))
