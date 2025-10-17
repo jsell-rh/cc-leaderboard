@@ -9,8 +9,10 @@
 <script setup lang="ts">
 useHead({
   title: 'Claude Code Usage Leaderboard',
-  meta: [
-    { name: 'description', content: 'Track and compare Claude Code usage across your team' }
-  ]
+  meta: [{ name: 'description', content: 'Track and compare Claude Code usage across your team' }],
 })
 </script>
+
+<style>
+@import './assets/css/main.css';
+</style>
