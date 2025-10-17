@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen relative overflow-x-hidden bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30"
+    class="min-h-screen flex flex-col relative overflow-x-hidden bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30"
   >
     <!-- Professional Navigation -->
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
@@ -62,12 +62,12 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white/50 border-t border-gray-200 mt-auto">
+    <footer class="bg-white/50 border-t border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex flex-col items-center gap-2">
           <p class="text-center text-sm text-gray-600">
