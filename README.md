@@ -209,6 +209,54 @@ npm run build:cli
 npm run build
 ```
 
+## Publishing the CLI to npm
+
+The CLI package is automatically published to npm when you push a version tag.
+
+### Setting up npm Publishing
+
+1. **Create an npm access token**
+
+   - Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens
+   - Click "Generate New Token" → "Classic Token"
+   - Select "Automation" type
+   - Copy the token
+
+2. **Add the token to GitHub Secrets**
+   - Go to your repository settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `NPM_TOKEN`
+   - Value: Paste your npm token
+   - Click "Add secret"
+
+### Publishing a new version
+
+1. Update the version in `cli/package.json`:
+
+   ```bash
+   cd cli
+   npm version patch  # or minor, or major
+   ```
+
+2. Commit the version change:
+
+   ```bash
+   git add package.json
+   git commit -m "chore: bump version to X.Y.Z"
+   ```
+
+3. Create and push a git tag:
+
+   ```bash
+   git tag v0.1.1  # Match the version in package.json
+   git push origin main --tags
+   ```
+
+4. The GitHub Action will automatically:
+   - Build the TypeScript CLI
+   - Publish to npm
+   - Users can then use `npx ccleaderboard` without installing anything
+
 ## License
 
 MIT

@@ -16,8 +16,21 @@
     "usage",
     "leaderboard"
   ],
-  "author": "",
+  "author": "jsell-rh",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsell-rh/cc-leaderboard.git",
+    "directory": "cli"
+  },
+  "homepage": "https://github.com/jsell-rh/cc-leaderboard#readme",
+  "bugs": {
+    "url": "https://github.com/jsell-rh/cc-leaderboard/issues"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
