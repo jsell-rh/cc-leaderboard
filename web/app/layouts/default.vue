@@ -80,8 +80,9 @@ import { Button } from '~/components/ui/button'
 
 const { loggedIn, user, clear } = useUserSession()
 
-const handleLogin = async () => {
-  await navigateTo('/api/auth/github')
+const handleLogin = () => {
+  // Use window.location for OAuth redirects to avoid client-side navigation issues
+  window.location.href = '/api/auth/github'
 }
 
 const handleLogout = async () => {

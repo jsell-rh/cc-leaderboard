@@ -348,8 +348,9 @@ import type { LeaderboardResponse } from '~/types/api'
 
 const { user } = useUserSession()
 
-const handleLogin = async () => {
-  await navigateTo('/api/auth/github')
+const handleLogin = () => {
+  // Use window.location for OAuth redirects to avoid client-side navigation issues
+  window.location.href = '/api/auth/github'
 }
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
