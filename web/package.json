@@ -29,10 +29,8 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
-    "@tailwindcss/postcss": "^4.0.0",
     "@vitest/ui": "^1.2.0",
     "drizzle-kit": "^0.29.1",
-    "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
     "vitest": "^1.2.0",
     "vue-tsc": "^2.1.10"
