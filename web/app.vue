@@ -12,7 +12,3 @@ useHead({
   meta: [{ name: 'description', content: 'Track and compare Claude Code usage across your team' }],
 })
 </script>
-
-<style>
-@import '~/assets/css/main.css';
-</style>
