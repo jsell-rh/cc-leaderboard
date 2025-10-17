@@ -13,15 +13,13 @@ program
   .description('Submit Claude Code usage to the leaderboard')
   .version('0.1.0')
 
-program
-  .command('login')
-  .description('Authenticate with the leaderboard')
-  .action(loginCommand)
+program.command('login').description('Authenticate with the leaderboard').action(loginCommand)
 
 program
   .command('submit')
   .description('Submit your Claude Code usage data')
   .option('--date <date>', 'Date to submit (YYYY-MM-DD format, defaults to today)')
+  .option('--all', 'Import all historical usage data')
   .action(submitCommand)
 
 program
