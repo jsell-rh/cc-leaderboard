@@ -211,9 +211,9 @@ npm run build
 
 ## Publishing the CLI to npm
 
-The CLI package is automatically published to npm when you push a version tag.
+The CLI package uses **semantic-release** for automated versioning and publishing based on conventional commits.
 
-### Setting up npm Publishing
+### Setting up Automated Releases
 
 1. **Create an npm access token**
 
@@ -229,33 +229,35 @@ The CLI package is automatically published to npm when you push a version tag.
    - Value: Paste your npm token
    - Click "Add secret"
 
+### How it works
+
+Every push to the `main` branch triggers semantic-release, which:
+
+1. **Analyzes commits** since the last release using conventional commit format:
+
+   - `feat:` → Minor version bump (e.g., 1.0.0 → 1.1.0)
+   - `fix:` → Patch version bump (e.g., 1.0.0 → 1.0.1)
+   - `BREAKING CHANGE:` → Major version bump (e.g., 1.0.0 → 2.0.0)
+   - `chore:`, `docs:`, `refactor:` → No release
+
+2. **Automatically**:
+   - Determines the next version number
+   - Generates CHANGELOG.md
+   - Updates package.json
+   - Creates a git tag
+   - Publishes to npm
+   - Creates a GitHub release
+
 ### Publishing a new version
 
-1. Update the version in `cli/package.json`:
+Simply push commits using conventional commit format:
 
-   ```bash
-   cd cli
-   npm version patch  # or minor, or major
-   ```
+```bash
+git commit -m "feat: add new cool feature"
+git push origin main
+```
 
-2. Commit the version change:
-
-   ```bash
-   git add package.json
-   git commit -m "chore: bump version to X.Y.Z"
-   ```
-
-3. Create and push a git tag:
-
-   ```bash
-   git tag v0.1.1  # Match the version in package.json
-   git push origin main --tags
-   ```
-
-4. The GitHub Action will automatically:
-   - Build the TypeScript CLI
-   - Publish to npm
-   - Users can then use `npx cc-leaderboard` without installing anything
+Semantic-release will handle the rest! Users can then use `npx cc-leaderboard` without installing anything.
 
 ## License
 

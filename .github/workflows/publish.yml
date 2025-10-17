@@ -1,23 +1,30 @@
-name: Publish to npm
+name: Release
 
 on:
   push:
-    tags:
-      - 'v*' # Trigger on version tags like v1.0.0, v0.1.0, etc.
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install CLI dependencies
         run: |
@@ -29,9 +36,10 @@ jobs:
           cd cli
           npm run build
 
-      - name: Publish to npm
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd cli
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npx semantic-release
