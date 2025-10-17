@@ -142,12 +142,14 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '~/components/ui/button/Button.vue'
-import DropdownMenu from '~/components/ui/dropdown-menu/DropdownMenu.vue'
-import DropdownMenuTrigger from '~/components/ui/dropdown-menu/DropdownMenuTrigger.vue'
-import DropdownMenuContent from '~/components/ui/dropdown-menu/DropdownMenuContent.vue'
-import DropdownMenuItem from '~/components/ui/dropdown-menu/DropdownMenuItem.vue'
-import DropdownMenuSeparator from '~/components/ui/dropdown-menu/DropdownMenuSeparator.vue'
+import { Button } from '~/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '~/components/ui/dropdown-menu'
 
 const { loggedIn, user, clear } = useUserSession()
 
