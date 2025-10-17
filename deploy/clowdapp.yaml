@@ -1,0 +1,146 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: cc-leaderboard
+objects:
+  # PersistentVolumeClaim for SQLite database
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: cc-leaderboard-db-pvc
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: ${DB_STORAGE_SIZE}
+
+  # ClowdApp
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: ClowdApp
+    metadata:
+      name: cc-leaderboard
+      annotations:
+        # Enable SAML authentication for crcauth
+        crc.auth.type: 'saml'
+    spec:
+      envName: ${ENV_NAME}
+
+      deployments:
+        - name: web
+          minReplicas: ${{APP_REPLICAS}}
+          web: true
+          webServices:
+            public:
+              enabled: true
+          podSpec:
+            image: ${IMAGE}:${IMAGE_TAG}
+            ports:
+              - name: web
+                protocol: TCP
+                containerPort: 3000
+            env:
+              - name: PORT
+                value: '3000'
+              # Nuxt runtime config overrides (NUXT_ prefix required)
+              - name: NUXT_PUBLIC_APP_URL
+                value: ${APP_PUBLIC_URL}
+              # GitHub OAuth configuration
+              - name: NUXT_OAUTH_GITHUB_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: cc-leaderboard-github-oauth
+                    key: client-id
+              - name: NUXT_OAUTH_GITHUB_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: cc-leaderboard-github-oauth
+                    key: client-secret
+              # JWT Secret for API keys
+              - name: NUXT_JWT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: cc-leaderboard-secrets
+                    key: jwt-secret
+              # Session secret for nuxt-auth-utils
+              - name: NUXT_SESSION_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: cc-leaderboard-secrets
+                    key: session-password
+              # Database configuration (SQLite with Turso/libSQL)
+              - name: NUXT_DATABASE_URL
+                value: 'file:///data/leaderboard.db'
+              # Required email domain (optional - leave empty to allow all)
+              - name: NUXT_PUBLIC_REQUIRED_EMAIL_DOMAIN
+                value: ${REQUIRED_EMAIL_DOMAIN}
+            volumes:
+              - name: db-data
+                persistentVolumeClaim:
+                  claimName: cc-leaderboard-db-pvc
+            volumeMounts:
+              - name: db-data
+                mountPath: /data
+            livenessProbe:
+              httpGet:
+                path: /api/health
+                port: 3000
+              initialDelaySeconds: 10
+              periodSeconds: 30
+              timeoutSeconds: 5
+              failureThreshold: 3
+            readinessProbe:
+              httpGet:
+                path: /api/health
+                port: 3000
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 3
+            resources:
+              limits:
+                cpu: ${APP_CPU_LIMIT}
+                memory: ${APP_MEMORY_LIMIT}
+              requests:
+                cpu: ${APP_CPU_REQUEST}
+                memory: ${APP_MEMORY_REQUEST}
+
+parameters:
+  - name: ENV_NAME
+    description: ClowdEnvironment name
+    required: true
+
+  # Image parameters
+  - name: IMAGE
+    description: Image name for the web app
+    value: quay.io/cloudservices/cc-leaderboard
+  - name: IMAGE_TAG
+    description: Image tag for the web app
+    value: latest
+
+  # App parameters
+  - name: APP_REPLICAS
+    description: Number of app replicas
+    value: '1'
+  - name: APP_CPU_LIMIT
+    value: '500m'
+  - name: APP_CPU_REQUEST
+    value: '100m'
+  - name: APP_MEMORY_LIMIT
+    value: '512Mi'
+  - name: APP_MEMORY_REQUEST
+    value: '256Mi'
+  - name: APP_PUBLIC_URL
+    description: Public URL for the application
+    required: true
+
+  # Database parameters
+  - name: DB_STORAGE_SIZE
+    description: Storage size for SQLite database
+    value: '5Gi'
+
+  # Authentication parameters
+  - name: REQUIRED_EMAIL_DOMAIN
+    description: Required email domain for users (e.g. @redhat.com) - leave empty to allow all
+    value: '@redhat.com'
