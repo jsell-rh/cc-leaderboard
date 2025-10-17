@@ -12,7 +12,7 @@
 import { Primitive } from 'radix-vue'
 import type { HTMLAttributes } from 'vue'
 import { type ButtonVariants, buttonVariants } from '.'
-import { cn } from '@/lib/utils'
+import { cn } from '~/lib/utils'
 
 interface Props {
   variant?: ButtonVariants['variant']
