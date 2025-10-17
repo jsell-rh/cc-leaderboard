@@ -8,15 +8,17 @@ export async function loginCommand() {
 
   console.log(chalk.bold('\n🔐 Login to Claude Code Leaderboard\n'))
 
+  const authUrl = `${config.apiUrl}/api/auth/github`
   const spinner = ora('Opening browser for authentication...').start()
 
   try {
     // Open browser to auth page
-    await open(`${config.apiUrl}/api/auth/github`)
+    await open(authUrl)
 
     spinner.succeed('Browser opened')
 
     console.log(chalk.cyan('\n📋 Please complete the following steps:'))
+    console.log(chalk.gray(`   If the browser didn't open, visit: ${authUrl}\n`))
     console.log(chalk.white('  1. Sign in with GitHub'))
     console.log(chalk.white('  2. Authorize the application'))
     console.log(chalk.white('  3. Go to Settings page'))
