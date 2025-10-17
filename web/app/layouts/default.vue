@@ -29,7 +29,7 @@
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                   <button
-                    class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
                   >
                     <img
                       v-if="user?.avatar"
