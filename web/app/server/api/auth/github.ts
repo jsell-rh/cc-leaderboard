@@ -80,11 +80,8 @@ export default defineOAuthGitHubEventHandler({
       },
     })
 
-    // Redirect to settings if coming from CLI, otherwise to home
-    const query = getQuery(event)
-    const redirectPath = query.source === 'cli' ? '/settings?from=cli' : '/'
-
-    return sendRedirect(event, redirectPath)
+    // Always redirect to home - client-side logic will redirect to settings if needed
+    return sendRedirect(event, '/')
   },
 
   onError(event, error) {

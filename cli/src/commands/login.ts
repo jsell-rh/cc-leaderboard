@@ -8,7 +8,7 @@ export async function loginCommand() {
 
   console.log(chalk.bold('\n🔐 Login to Claude Code Leaderboard\n'))
 
-  const authUrl = `${config.apiUrl}/api/auth/github?source=cli`
+  const authUrl = `${config.apiUrl}/auth/cli-login`
   const spinner = ora('Opening browser for authentication...').start()
 
   try {

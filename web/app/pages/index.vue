@@ -541,8 +541,12 @@ const formatNumber = (num: number) => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
-// Auto-refresh every 30 seconds
+// Check if coming from CLI login and redirect to settings
 onMounted(() => {
+  if (process.client && localStorage.getItem('cli-login') === 'true') {
+    navigateTo('/settings')
+  }
+
   const interval = setInterval(() => {
     refresh()
   }, 30000)

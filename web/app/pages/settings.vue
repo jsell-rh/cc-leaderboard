@@ -2,7 +2,7 @@
   <div class="max-w-4xl mx-auto space-y-6">
     <!-- CLI Welcome Banner -->
     <div
-      v-if="route.query.from === 'cli'"
+      v-if="showCliWelcome"
       class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-lg border border-purple-300 p-6 text-white"
     >
       <div class="flex items-start gap-4">
@@ -316,11 +316,20 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const route = useRoute()
 const { data: userData } = await useFetch<UserData>('/api/me')
 
 const showKey = ref(false)
 const copied = ref(false)
+const showCliWelcome = ref(false)
+
+// Check localStorage for CLI login flag
+onMounted(() => {
+  if (process.client && localStorage.getItem('cli-login') === 'true') {
+    showCliWelcome.value = true
+    // Clear the flag so it doesn't show again
+    localStorage.removeItem('cli-login')
+  }
+})
 
 const copyApiKey = async () => {
   if (userData.value?.apiKey) {
