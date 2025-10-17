@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   if (!validation.success) {
     throw createError({
       statusCode: 400,
-      message: 'Invalid period. Must be one of: daily, weekly, monthly, all-time'
+      message: 'Invalid period. Must be one of: daily, weekly, monthly, all-time',
     })
   }
 
@@ -24,10 +24,7 @@ export default defineEventHandler(async (event) => {
     case 'daily':
       // Today's submissions
       const today = now.toISOString().split('T')[0]
-      dateFilter = and(
-        gte(submissions.date, today),
-        lte(submissions.date, today)
-      )
+      dateFilter = and(gte(submissions.date, today), lte(submissions.date, today))
       break
 
     case 'weekly':
@@ -48,23 +45,26 @@ export default defineEventHandler(async (event) => {
       break
   }
 
-  // Aggregate submissions by user
-  const results = await db
+  // Aggregate submissions by user (only show users with submissions in this period)
+  let query = db
     .select({
       userId: users.id,
       name: users.name,
       email: users.email,
       avatar: users.avatar,
-      totalCost: sql<number>`COALESCE(SUM(${submissions.dailyCost}), 0)`.as('total_cost'),
-      totalInputTokens: sql<number>`COALESCE(SUM(${submissions.inputTokens}), 0)`.as('total_input_tokens'),
-      totalOutputTokens: sql<number>`COALESCE(SUM(${submissions.outputTokens}), 0)`.as('total_output_tokens'),
-      submissionCount: sql<number>`COUNT(${submissions.id})`.as('submission_count')
+      totalCost: sql<number>`SUM(${submissions.dailyCost})`.as('total_cost'),
+      totalInputTokens: sql<number>`SUM(${submissions.inputTokens})`.as('total_input_tokens'),
+      totalOutputTokens: sql<number>`SUM(${submissions.outputTokens})`.as('total_output_tokens'),
+      submissionCount: sql<number>`COUNT(${submissions.id})`.as('submission_count'),
     })
-    .from(users)
-    .leftJoin(submissions, and(
-      sql`${users.id} = ${submissions.userId}`,
-      dateFilter
-    ))
+    .from(submissions)
+    .innerJoin(users, sql`${users.id} = ${submissions.userId}`)
+
+  if (dateFilter) {
+    query = query.where(dateFilter) as typeof query
+  }
+
+  const results = await query
     .groupBy(users.id, users.name, users.email, users.avatar)
     .orderBy(desc(sql`total_cost`))
 
@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
       totalCost: row.totalCost,
       totalInputTokens: row.totalInputTokens,
       totalOutputTokens: row.totalOutputTokens,
-      submissionCount: row.submissionCount
-    }))
+      submissionCount: row.submissionCount,
+    })),
   }
 })
