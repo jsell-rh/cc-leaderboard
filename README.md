@@ -20,7 +20,7 @@ A beautiful, secure web application and CLI tool for tracking and comparing Clau
 #### 1. Install the CLI
 
 ```bash
-npx ccleaderboard login
+npx cc-leaderboard login
 ```
 
 This will open your browser for GitHub authentication.
@@ -28,7 +28,7 @@ This will open your browser for GitHub authentication.
 #### 2. Submit Your Usage
 
 ```bash
-npx ccleaderboard submit
+npx cc-leaderboard submit
 ```
 
 The CLI automatically reads your Claude Code usage data and submits it to the leaderboard.
@@ -36,14 +36,14 @@ The CLI automatically reads your Claude Code usage data and submits it to the le
 #### 3. (Optional) Enable Auto-Submit
 
 ```bash
-npx ccleaderboard config --auto-submit daily
+npx cc-leaderboard config --auto-submit daily
 ```
 
 Then set up a cron job:
 
 ```bash
 # Submit every day at 6 PM
-0 18 * * * npx ccleaderboard submit
+0 18 * * * npx cc-leaderboard submit
 ```
 
 ### For Administrators
@@ -255,7 +255,7 @@ The CLI package is automatically published to npm when you push a version tag.
 4. The GitHub Action will automatically:
    - Build the TypeScript CLI
    - Publish to npm
-   - Users can then use `npx ccleaderboard` without installing anything
+   - Users can then use `npx cc-leaderboard` without installing anything
 
 ## License
 

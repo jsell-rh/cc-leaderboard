@@ -9,7 +9,7 @@ import { statusCommand } from './commands/status.js'
 const program = new Command()
 
 program
-  .name('ccleaderboard')
+  .name('cc-leaderboard')
   .description('Submit Claude Code usage to the leaderboard')
   .version('0.1.0')
 

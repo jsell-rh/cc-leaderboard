@@ -1,4 +1,4 @@
-# ccleaderboard
+# cc-leaderboard
 
 CLI tool to submit your Claude Code usage to the leaderboard.
 
@@ -8,19 +8,19 @@ No installation required! Just use `npx`:
 
 ```bash
 # Authenticate with GitHub
-npx ccleaderboard login
+npx cc-leaderboard login
 
 # Submit today's usage
-npx ccleaderboard submit
+npx cc-leaderboard submit
 
 # Import all historical usage data
-npx ccleaderboard submit --all
+npx cc-leaderboard submit --all
 
 # Submit a specific date
-npx ccleaderboard submit --date 2024-01-15
+npx cc-leaderboard submit --date 2024-01-15
 
 # Check your configuration
-npx ccleaderboard status
+npx cc-leaderboard status
 ```
 
 ## Commands
@@ -30,7 +30,7 @@ npx ccleaderboard status
 Authenticate with the leaderboard via GitHub OAuth.
 
 ```bash
-npx ccleaderboard login
+npx cc-leaderboard login
 ```
 
 This will:
@@ -45,13 +45,13 @@ Submit your Claude Code usage data to the leaderboard.
 
 ```bash
 # Submit today's usage
-npx ccleaderboard submit
+npx cc-leaderboard submit
 
 # Submit a specific date
-npx ccleaderboard submit --date 2024-01-15
+npx cc-leaderboard submit --date 2024-01-15
 
 # Import all historical usage data
-npx ccleaderboard submit --all
+npx cc-leaderboard submit --all
 ```
 
 **Options:**
@@ -66,9 +66,9 @@ The `--all` flag is perfect for when you first join the leaderboard and want to 
 Configure auto-submit settings.
 
 ```bash
-npx ccleaderboard config --auto-submit daily
-npx ccleaderboard config --auto-submit weekly
-npx ccleaderboard config --auto-submit off
+npx cc-leaderboard config --auto-submit daily
+npx cc-leaderboard config --auto-submit weekly
+npx cc-leaderboard config --auto-submit off
 ```
 
 ### `status`
@@ -76,7 +76,7 @@ npx ccleaderboard config --auto-submit off
 View your current configuration and recent submissions.
 
 ```bash
-npx ccleaderboard status
+npx cc-leaderboard status
 ```
 
 ## How It Works
@@ -102,7 +102,7 @@ You can set up a cron job to automatically submit your usage:
 crontab -e
 
 # Add this line to submit daily at 6 PM
-0 18 * * * npx ccleaderboard submit
+0 18 * * * npx cc-leaderboard submit
 ```
 
 ### Windows (Task Scheduler)
@@ -110,7 +110,7 @@ crontab -e
 Create a task that runs:
 
 ```powershell
-npx ccleaderboard submit
+npx cc-leaderboard submit
 ```
 
 ## Support

@@ -26,10 +26,10 @@ export async function configCommand(options: { autoSubmit?: string }) {
 
       if (schedule === 'daily') {
         console.log(chalk.gray('  Example cron (every day at 6 PM):'))
-        console.log(chalk.white('  0 18 * * * npx ccleaderboard submit'))
+        console.log(chalk.white('  0 18 * * * npx cc-leaderboard submit'))
       } else if (schedule === 'weekly') {
         console.log(chalk.gray('  Example cron (every Sunday at 6 PM):'))
-        console.log(chalk.white('  0 18 * * 0 npx ccleaderboard submit'))
+        console.log(chalk.white('  0 18 * * 0 npx cc-leaderboard submit'))
       }
     }
   } else {
