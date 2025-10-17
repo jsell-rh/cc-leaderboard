@@ -495,7 +495,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '~/components/ui/button'
+import { Button } from '~/components/ui/button/Button.vue'
 import type { LeaderboardResponse } from '~/types/api'
 
 const { user, loggedIn } = useUserSession()
