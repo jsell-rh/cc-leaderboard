@@ -1,0 +1,38 @@
+{
+  "name": "ccleaderboard",
+  "version": "0.1.0",
+  "description": "CLI tool to submit Claude Code usage to the leaderboard",
+  "type": "module",
+  "bin": {
+    "ccleaderboard": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude-code",
+    "usage",
+    "leaderboard"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "conf": "^13.0.1",
+    "keytar": "^7.9.0",
+    "node-cron": "^3.0.3",
+    "open": "^10.1.0",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/node-cron": "^3.0.11",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

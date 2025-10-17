@@ -1,0 +1,16 @@
+{
+  "name": "cc-leaderboard",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "cli",
+    "web"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=web",
+    "dev:cli": "npm run dev --workspace=cli",
+    "build:web": "npm run build --workspace=web",
+    "build:cli": "npm run build --workspace=cli",
+    "build": "npm run build:web && npm run build:cli"
+  }
+}

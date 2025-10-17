@@ -1,0 +1,32 @@
+{
+  "name": "cc-leaderboard-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^3.0.0",
+    "better-sqlite3": "^11.7.0",
+    "chart.js": "^4.4.7",
+    "drizzle-orm": "^0.36.4",
+    "nuxt": "^3.15.1",
+    "nuxt-auth-utils": "^0.5.3",
+    "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "drizzle-kit": "^0.29.1",
+    "typescript": "^5.7.2",
+    "vue-tsc": "^2.1.10"
+  }
+}
