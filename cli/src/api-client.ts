@@ -8,7 +8,9 @@ export interface SubmissionData {
   outputTokens: number
 }
 
-export async function submitUsage(data: SubmissionData): Promise<{ success: boolean; updated: boolean }> {
+export async function submitUsage(
+  data: SubmissionData
+): Promise<{ success: boolean; updated: boolean }> {
   const config = getConfig()
   const apiKey = await getApiKey()
 
@@ -20,17 +22,19 @@ export async function submitUsage(data: SubmissionData): Promise<{ success: bool
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      Authorization: `Bearer ${apiKey}`,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: response.statusText }))
+    const error = (await response.json().catch(() => ({ message: response.statusText }))) as {
+      message?: string
+    }
     throw new Error(`Failed to submit: ${error.message || response.statusText}`)
   }
 
-  return await response.json()
+  return (await response.json()) as { success: boolean; updated: boolean }
 }
 
 export async function getUserInfo(): Promise<any> {
@@ -43,8 +47,8 @@ export async function getUserInfo(): Promise<any> {
 
   const response = await fetch(`${config.apiUrl}/api/me`, {
     headers: {
-      'Authorization': `Bearer ${apiKey}`
-    }
+      Authorization: `Bearer ${apiKey}`,
+    },
   })
 
   if (!response.ok) {
