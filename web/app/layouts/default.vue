@@ -28,31 +28,29 @@
             <template v-if="loggedIn">
               <ClientOnly>
                 <DropdownMenu>
-                  <DropdownMenuTrigger as-child>
-                    <button
-                      class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                  <DropdownMenuTrigger
+                    class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                  >
+                    <img
+                      v-if="user?.avatar"
+                      :src="user.avatar"
+                      :alt="user.name"
+                      class="h-8 w-8 rounded-full ring-2 ring-gray-200"
+                    />
+                    <span class="text-sm font-medium text-gray-900">{{ user?.name }}</span>
+                    <svg
+                      class="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <img
-                        v-if="user?.avatar"
-                        :src="user.avatar"
-                        :alt="user.name"
-                        class="h-8 w-8 rounded-full ring-2 ring-gray-200"
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
                       />
-                      <span class="text-sm font-medium text-gray-900">{{ user?.name }}</span>
-                      <svg
-                        class="w-4 h-4 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
+                    </svg>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" class="w-56">
                     <DropdownMenuItem @click="navigateTo('/settings')">
