@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: cc-leaderboard
+  labels:
+    app: cc-leaderboard
+spec:
+  to:
+    kind: Service
+    name: cc-leaderboard
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

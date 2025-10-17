@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cc-leaderboard
+  labels:
+    app: cc-leaderboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cc-leaderboard
+  template:
+    metadata:
+      labels:
+        app: cc-leaderboard
+    spec:
+      containers:
+      - name: cc-leaderboard
+        image: cc-leaderboard:latest
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_PATH
+          value: "/app/data/leaderboard.db"
+        - name: NUXT_PUBLIC_APP_URL
+          value: "https://leaderboard.example.com"
+        - name: NUXT_PUBLIC_REQUIRED_EMAIL_DOMAIN
+          value: "@example.com"
+        - name: NUXT_OAUTH_GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: cc-leaderboard-secrets
+              key: github-client-id
+        - name: NUXT_OAUTH_GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cc-leaderboard-secrets
+              key: github-client-secret
+        - name: NUXT_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cc-leaderboard-secrets
+              key: jwt-secret
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: cc-leaderboard-data
