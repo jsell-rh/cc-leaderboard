@@ -84,7 +84,7 @@
             <h3 class="font-bold text-gray-900 text-lg mb-1">Authenticate the CLI</h3>
             <p class="text-gray-600 mb-3">Run this command and paste your API key:</p>
             <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
-              $ npx ccleaderboard login
+              $ npx cc-leaderboard login
             </code>
           </div>
         </div>
@@ -102,13 +102,13 @@
             <h3 class="font-bold text-gray-900 text-lg mb-1">Import All Your Usage Data</h3>
             <p class="text-gray-600 mb-3">One command imports your entire Claude Code history:</p>
             <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
-              $ npx ccleaderboard submit --all
+              $ npx cc-leaderboard submit --all
             </code>
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
               <p class="text-sm text-blue-900">
                 <strong class="font-semibold">✨ Pro tip:</strong> After the initial import, run
                 <code class="bg-blue-100 px-1.5 py-0.5 rounded text-xs font-mono"
-                  >npx ccleaderboard submit</code
+                  >npx cc-leaderboard submit</code
                 >
                 daily to keep your stats updated!
               </p>
@@ -312,39 +312,167 @@
     <!-- Quick Reference for users already on leaderboard -->
     <div
       v-if="user && data?.leaderboard && data.leaderboard.find((e) => e.userId === user.id)"
-      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+      class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
     >
-      <div class="flex items-start gap-4">
-        <div
-          class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0"
-        >
-          <svg
-            class="w-5 h-5 text-purple-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <!-- Main Section -->
+      <div class="p-6">
+        <div class="flex items-start gap-4">
+          <div
+            class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
+            <svg
+              class="w-5 h-5 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-900 mb-2">Keep Your Stats Updated</h3>
+            <p class="text-gray-600 text-sm mb-3">
+              Run this command daily to submit new usage data:
+            </p>
+            <code class="block bg-gray-900 text-green-400 px-4 py-2 rounded-lg text-sm font-mono">
+              $ npx cc-leaderboard submit
+            </code>
+            <p class="text-xs text-gray-500 mt-2">
+              View your API key in
+              <NuxtLink to="/settings" class="text-purple-600 hover:text-purple-700 underline">
+                Settings
+              </NuxtLink>
+            </p>
+          </div>
         </div>
-        <div class="flex-1">
-          <h3 class="font-semibold text-gray-900 mb-2">Keep Your Stats Updated</h3>
-          <p class="text-gray-600 text-sm mb-3">Run this command daily to submit new usage data:</p>
-          <code class="block bg-gray-900 text-green-400 px-4 py-2 rounded-lg text-sm font-mono">
-            $ npx ccleaderboard submit
-          </code>
-          <p class="text-xs text-gray-500 mt-2">
-            View your API key and detailed setup instructions in
-            <NuxtLink to="/settings" class="text-purple-600 hover:text-purple-700 underline">
-              Settings
-            </NuxtLink>
-          </p>
-        </div>
+      </div>
+
+      <!-- Advanced Tips Section -->
+      <div class="bg-gradient-to-br from-purple-50 to-blue-50 border-t border-purple-100 p-6">
+        <details class="group">
+          <summary
+            class="cursor-pointer list-none flex items-center justify-between font-semibold text-gray-900 hover:text-purple-700 transition-colors"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="w-5 h-5 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+              Advanced Options
+            </span>
+            <svg
+              class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </summary>
+
+          <div class="mt-4 space-y-4 text-sm">
+            <!-- Auto-Submit Section -->
+            <div class="bg-white rounded-lg p-4 border border-purple-200">
+              <h4 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Automatic Daily Submissions
+              </h4>
+              <p class="text-gray-600 mb-3">Set up a cron job to submit automatically every day:</p>
+
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs font-medium text-gray-700 mb-1">macOS/Linux:</p>
+                  <code
+                    class="block bg-gray-900 text-green-400 px-3 py-2 rounded text-xs font-mono"
+                  >
+                    # Edit crontab<br />
+                    crontab -e<br /><br />
+                    # Add this line (runs daily at 6 PM)<br />
+                    0 18 * * * npx cc-leaderboard submit
+                  </code>
+                </div>
+
+                <div>
+                  <p class="text-xs font-medium text-gray-700 mb-1">Windows (Task Scheduler):</p>
+                  <ol class="list-decimal list-inside text-gray-600 space-y-1 ml-2">
+                    <li>Open Task Scheduler</li>
+                    <li>Create a new task to run daily</li>
+                    <li>
+                      Set action to run:
+                      <code class="bg-gray-100 px-1 rounded text-xs"
+                        >npx cc-leaderboard submit</code
+                      >
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historical Import Section -->
+            <div class="bg-white rounded-lg p-4 border border-blue-200">
+              <h4 class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <svg
+                  class="w-4 h-4 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8V4"
+                  />
+                </svg>
+                Import Historical Data
+              </h4>
+              <p class="text-gray-600 mb-2">Need to backfill or reimport your usage data?</p>
+              <code class="block bg-gray-900 text-green-400 px-3 py-2 rounded text-xs font-mono">
+                $ npx cc-leaderboard submit --all
+              </code>
+              <p class="text-xs text-gray-500 mt-2">
+                This imports your entire Claude Code usage history, updating any existing entries.
+              </p>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
 
