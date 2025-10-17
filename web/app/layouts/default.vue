@@ -26,34 +26,41 @@
           <!-- Actions -->
           <div class="flex items-center space-x-4">
             <template v-if="loggedIn">
-              <ClientOnly>
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+              <DropdownMenuRoot>
+                <DropdownMenuTrigger
+                  class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                >
+                  <img
+                    v-if="user?.avatar"
+                    :src="user.avatar"
+                    :alt="user.name"
+                    class="h-8 w-8 rounded-full ring-2 ring-gray-200"
+                  />
+                  <span class="text-sm font-medium text-gray-900">{{ user?.name }}</span>
+                  <svg
+                    class="w-4 h-4 text-gray-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <img
-                      v-if="user?.avatar"
-                      :src="user.avatar"
-                      :alt="user.name"
-                      class="h-8 w-8 rounded-full ring-2 ring-gray-200"
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
                     />
-                    <span class="text-sm font-medium text-gray-900">{{ user?.name }}</span>
-                    <svg
-                      class="w-4 h-4 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  </svg>
+                </DropdownMenuTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuContent
+                    :side-offset="5"
+                    align="end"
+                    class="z-50 min-w-[14rem] overflow-hidden rounded-md border border-gray-200 bg-white p-1 text-gray-950 shadow-md"
+                  >
+                    <DropdownMenuItem
+                      @click="navigateTo('/settings')"
+                      class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 focus:bg-gray-100"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" class="w-56">
-                    <DropdownMenuItem @click="navigateTo('/settings')">
                       <svg
                         class="w-4 h-4 mr-2 text-gray-500"
                         fill="none"
@@ -75,8 +82,11 @@
                       </svg>
                       Settings
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem @click="handleLogout" class="text-red-600 focus:text-red-600">
+                    <DropdownMenuSeparator class="-mx-1 my-1 h-px bg-gray-100" />
+                    <DropdownMenuItem
+                      @click="handleLogout"
+                      class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-gray-100 focus:bg-gray-100 text-red-600"
+                    >
                       <svg
                         class="w-4 h-4 mr-2"
                         fill="none"
@@ -93,8 +103,8 @@
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
-                </DropdownMenu>
-              </ClientOnly>
+                </DropdownMenuPortal>
+              </DropdownMenuRoot>
             </template>
             <template v-else>
               <a href="/api/auth/github">
@@ -142,12 +152,13 @@
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
 import {
-  DropdownMenu,
+  DropdownMenuRoot,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '~/components/ui/dropdown-menu'
+  DropdownMenuPortal,
+} from 'radix-vue'
 
 const { loggedIn, user, clear } = useUserSession()
 
