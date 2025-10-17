@@ -543,8 +543,14 @@ const formatNumber = (num: number) => {
 
 // Check if coming from CLI login and redirect to settings
 onMounted(() => {
-  if (process.client && localStorage.getItem('cli-login') === 'true') {
+  const cliLoginFlag = localStorage.getItem('cli-login')
+  console.log('Index: Checking CLI login flag, value =', cliLoginFlag)
+
+  if (cliLoginFlag === 'true') {
+    console.log('Index: CLI flag detected! Redirecting to settings...')
     navigateTo('/settings')
+  } else {
+    console.log('Index: No CLI flag, staying on homepage')
   }
 
   const interval = setInterval(() => {

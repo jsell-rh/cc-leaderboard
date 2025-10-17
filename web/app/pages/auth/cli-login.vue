@@ -26,9 +26,15 @@
 
 <script setup lang="ts">
 // Set localStorage flag to indicate CLI login
-if (process.client) {
+onMounted(() => {
+  console.log('CLI Login: Setting localStorage flag')
   localStorage.setItem('cli-login', 'true')
-  // Redirect to GitHub OAuth
-  window.location.href = '/api/auth/github'
-}
+  console.log('CLI Login: Flag set, value =', localStorage.getItem('cli-login'))
+
+  // Small delay to ensure localStorage is saved
+  setTimeout(() => {
+    console.log('CLI Login: Redirecting to GitHub OAuth')
+    window.location.href = '/api/auth/github'
+  }, 100)
+})
 </script>

@@ -324,10 +324,17 @@ const showCliWelcome = ref(false)
 
 // Check localStorage for CLI login flag
 onMounted(() => {
-  if (process.client && localStorage.getItem('cli-login') === 'true') {
+  const cliLoginFlag = localStorage.getItem('cli-login')
+  console.log('Settings: Checking CLI login flag, value =', cliLoginFlag)
+
+  if (cliLoginFlag === 'true') {
+    console.log('Settings: CLI flag detected! Showing welcome banner')
     showCliWelcome.value = true
     // Clear the flag so it doesn't show again
     localStorage.removeItem('cli-login')
+    console.log('Settings: Flag cleared')
+  } else {
+    console.log('Settings: No CLI flag, hiding banner')
   }
 })
 
