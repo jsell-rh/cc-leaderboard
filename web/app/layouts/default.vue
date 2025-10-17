@@ -52,7 +52,9 @@
               </Button>
             </template>
             <template v-else>
-              <Button @click="handleLogin"> Sign in with GitHub </Button>
+              <a href="/api/auth/github">
+                <Button> Sign in with GitHub </Button>
+              </a>
             </template>
           </div>
         </div>
@@ -79,11 +81,6 @@
 import { Button } from '~/components/ui/button'
 
 const { loggedIn, user, clear } = useUserSession()
-
-const handleLogin = () => {
-  // Use window.location for OAuth redirects to avoid client-side navigation issues
-  window.location.href = '/api/auth/github'
-}
 
 const handleLogout = async () => {
   await clear()

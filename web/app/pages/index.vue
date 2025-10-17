@@ -331,13 +331,11 @@
       <p class="text-purple-100 mb-4">
         Sign in with GitHub to get your API key and start tracking your Claude Code usage
       </p>
-      <Button
-        @click="handleLogin"
-        variant="outline"
-        class="bg-white text-purple-600 hover:bg-gray-100 border-0"
-      >
-        Sign in with GitHub
-      </Button>
+      <a href="/api/auth/github">
+        <Button variant="outline" class="bg-white text-purple-600 hover:bg-gray-100 border-0">
+          Sign in with GitHub
+        </Button>
+      </a>
     </div>
   </div>
 </template>
@@ -347,11 +345,6 @@ import { Button } from '~/components/ui/button'
 import type { LeaderboardResponse } from '~/types/api'
 
 const { user } = useUserSession()
-
-const handleLogin = () => {
-  // Use window.location for OAuth redirects to avoid client-side navigation issues
-  window.location.href = '/api/auth/github'
-}
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
 
