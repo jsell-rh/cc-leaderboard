@@ -4,6 +4,9 @@ import { sql, desc, and, gte, lte } from 'drizzle-orm'
 const periodSchema = z.enum(['daily', 'weekly', 'monthly', 'all-time'])
 
 export default defineEventHandler(async (event) => {
+  // Require authentication - this will throw 401 if not logged in
+  await requireUserSession(event)
+
   const period = getRouterParam(event, 'period')
 
   const validation = periodSchema.safeParse(period)
