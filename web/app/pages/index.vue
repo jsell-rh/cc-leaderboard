@@ -188,43 +188,156 @@
       </div>
     </div>
 
-    <!-- CLI Instructions -->
-    <div v-if="user" class="bg-white rounded-lg shadow-sm border-2 border-purple-200 p-6">
-      <div class="flex items-start gap-4">
-        <div class="flex-shrink-0">
-          <div
-            class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center"
-          >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
+    <!-- CLI Getting Started Guide -->
+    <div
+      v-if="user"
+      class="bg-white rounded-lg shadow-sm border-2 border-purple-200 overflow-hidden"
+    >
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
+        <div class="flex items-center gap-3">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <h3 class="text-lg font-semibold text-white">Getting Started with the CLI</h3>
+        </div>
+        <p class="text-purple-100 text-sm mt-1">
+          Track your Claude Code usage in three simple steps
+        </p>
+      </div>
+
+      <!-- Steps -->
+      <div class="p-6 space-y-6">
+        <!-- Step 1: Get API Key -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm"
+            >
+              1
+            </div>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 mb-1">Get your API key</h4>
+            <p class="text-gray-600 text-sm mb-2">
+              Your API key authenticates your submissions. Copy it from your
+              <NuxtLink
+                to="/settings"
+                class="text-purple-600 hover:text-purple-700 font-medium underline"
+              >
+                Settings page
+              </NuxtLink>
+              and keep it secure.
+            </p>
           </div>
         </div>
-        <div class="flex-1">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">Submit your usage</h3>
-          <p class="text-gray-600 text-sm mb-3">Install the CLI tool and submit your usage data:</p>
-          <code
-            class="block bg-gray-50 px-4 py-3 rounded-lg text-sm font-mono text-purple-700 mb-3 border border-gray-200"
-          >
-            npx ccleaderboard login<br />
-            npx ccleaderboard submit
-          </code>
-          <p class="text-xs text-gray-500">
-            Get your API key from
-            <NuxtLink
-              to="/settings"
-              class="text-purple-600 hover:text-purple-700 font-medium underline"
+
+        <!-- Step 2: Configure CLI -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm"
             >
-              Settings
-            </NuxtLink>
+              2
+            </div>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 mb-1">Configure the CLI</h4>
+            <p class="text-gray-600 text-sm mb-2">
+              Run the login command and paste your API key when prompted:
+            </p>
+            <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
+              $ npx ccleaderboard login
+            </code>
+          </div>
+        </div>
+
+        <!-- Step 3: Submit Usage -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold text-sm"
+            >
+              3
+            </div>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 mb-1">Submit your usage data</h4>
+            <p class="text-gray-600 text-sm mb-2">
+              The CLI will analyze your Claude Code usage file and submit it to the leaderboard:
+            </p>
+            <code
+              class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono mb-3"
+            >
+              $ npx ccleaderboard submit
+            </code>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div class="flex gap-2">
+                <svg
+                  class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <div class="text-sm text-blue-900">
+                  <p class="font-medium">Pro tip:</p>
+                  <p class="text-blue-700 mt-1">
+                    Your Claude Code usage data is stored at:
+                    <code class="bg-blue-100 px-2 py-0.5 rounded text-xs"
+                      >~/.claude/usage_history.jsonl</code
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ / Additional Help -->
+        <div class="pt-4 border-t border-gray-200">
+          <p class="text-xs text-gray-500">
+            <strong>Need help?</strong> Visit our
+            <a
+              href="https://github.com/jsell-rh/cc-leaderboard"
+              target="_blank"
+              class="text-purple-600 hover:text-purple-700 underline"
+            >
+              GitHub repository
+            </a>
+            for detailed documentation and troubleshooting.
           </p>
         </div>
       </div>
+    </div>
+
+    <!-- CTA for non-logged in users -->
+    <div
+      v-else
+      class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-sm p-8 text-center text-white"
+    >
+      <h3 class="text-2xl font-bold mb-2">Ready to get started?</h3>
+      <p class="text-purple-100 mb-4">
+        Sign in with GitHub to get your API key and start tracking your Claude Code usage
+      </p>
+      <Button
+        @click="handleLogin"
+        variant="outline"
+        class="bg-white text-purple-600 hover:bg-gray-100 border-0"
+      >
+        Sign in with GitHub
+      </Button>
     </div>
   </div>
 </template>
@@ -234,6 +347,10 @@ import { Button } from '~/components/ui/button'
 import type { LeaderboardResponse } from '~/types/api'
 
 const { user } = useUserSession()
+
+const handleLogin = async () => {
+  await navigateTo('/api/auth/github')
+}
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
 
