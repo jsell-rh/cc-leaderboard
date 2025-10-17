@@ -3,13 +3,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
+  srcDir: 'app/',
+
   modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', 'nuxt-auth-utils'],
 
-  css: ['~/app/assets/css/main.css'],
+  css: ['~/assets/css/main.css'],
 
   shadcn: {
     prefix: '',
-    componentDir: './app/components/ui',
+    componentDir: 'app/components/ui',
   },
 
   runtimeConfig: {
