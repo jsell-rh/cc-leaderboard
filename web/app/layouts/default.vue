@@ -7,7 +7,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <!-- Logo -->
-          <NuxtLink to="/" class="flex items-center space-x-3 group">
+          <NuxtLink :to="loggedIn ? '/' : '/login'" class="flex items-center space-x-3 group">
             <div
               class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-2 rounded-lg group-hover:shadow-md transition-shadow"
             >

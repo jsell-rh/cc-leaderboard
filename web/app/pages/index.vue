@@ -370,7 +370,12 @@
 import { Button } from '~/components/ui/button'
 import type { LeaderboardResponse } from '~/types/api'
 
-const { user } = useUserSession()
+const { user, loggedIn } = useUserSession()
+
+// Redirect to login if not authenticated
+if (!loggedIn.value) {
+  await navigateTo('/login')
+}
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
 
