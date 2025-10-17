@@ -35,8 +35,8 @@ WORKDIR /app
 # Copy built application from builder
 COPY --from=builder --chown=1001:0 /app/web/.output ./
 
-# Copy database migrations (if any exist)
-COPY --from=builder --chown=1001:0 /app/web/app/server/database/migrations ./app/server/database/migrations 2>/dev/null || true
+# Copy database migrations
+COPY --from=builder --chown=1001:0 /app/web/migrations ./migrations
 
 # Expose port
 EXPOSE 3000
