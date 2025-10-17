@@ -503,7 +503,7 @@
       <p class="text-purple-100 mb-4">
         Sign in with GitHub to get your API key and start tracking your Claude Code usage
       </p>
-      <a href="/api/auth/github">
+      <a :href="githubAuthUrl">
         <Button variant="outline" class="bg-white text-purple-600 hover:bg-gray-100 border-0">
           Sign in with GitHub
         </Button>
@@ -517,6 +517,11 @@ import { Button } from '~/components/ui/button'
 import type { LeaderboardResponse } from '~/types/api'
 
 const { user, loggedIn } = useUserSession()
+
+// Build GitHub OAuth URL with basepath support
+const { $config } = useNuxtApp()
+const baseURL = $config.app.baseURL || '/'
+const githubAuthUrl = `${baseURL}api/auth/github`.replace(/\/\//g, '/')
 
 // Redirect to login if not authenticated
 if (!loggedIn.value) {

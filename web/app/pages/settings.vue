@@ -311,17 +311,19 @@
 
     <!-- Back to Leaderboard -->
     <div class="flex justify-center pt-4">
-      <Button as="a" href="/" variant="outline" size="lg" class="shadow-lg">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
-        Back to Leaderboard
-      </Button>
+      <NuxtLink to="/">
+        <Button variant="outline" size="lg" class="shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          Back to Leaderboard
+        </Button>
+      </NuxtLink>
     </div>
   </div>
 </template>

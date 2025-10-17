@@ -25,16 +25,22 @@
 </template>
 
 <script setup lang="ts">
+const { $config } = useNuxtApp()
+
 // Set localStorage flag to indicate CLI login
 onMounted(() => {
   console.log('CLI Login: Setting localStorage flag')
   localStorage.setItem('cli-login', 'true')
   console.log('CLI Login: Flag set, value =', localStorage.getItem('cli-login'))
 
+  // Build OAuth URL with basepath support
+  const baseURL = $config.app.baseURL || '/'
+  const oauthPath = `${baseURL}api/auth/github`.replace(/\/\//g, '/') // Remove double slashes
+
   // Small delay to ensure localStorage is saved
   setTimeout(() => {
-    console.log('CLI Login: Redirecting to GitHub OAuth')
-    window.location.href = '/api/auth/github'
+    console.log('CLI Login: Redirecting to GitHub OAuth at', oauthPath)
+    window.location.href = oauthPath
   }, 100)
 })
 </script>

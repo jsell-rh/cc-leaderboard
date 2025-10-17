@@ -113,6 +113,7 @@ deploy-ephemeral-local: build-local ## Build and deploy locally to ephemeral nam
 		-p IMAGE=$(LOCAL_IMAGE) \
 		-p IMAGE_TAG=$(LOCAL_IMAGE_TAG) \
 		-p APP_PUBLIC_URL=$(APP_PUBLIC_URL) \
+		-p APP_BASE_URL=/api/cc-leaderboard-web/ \
 		-p REQUIRED_EMAIL_DOMAIN=$(REQUIRED_EMAIL_DOMAIN) \
 		| oc apply -f -
 	@echo ""
@@ -123,23 +124,38 @@ deploy-ephemeral-local: build-local ## Build and deploy locally to ephemeral nam
 	@echo "Waiting for route to be created..."
 	@for i in 1 2 3 4 5 6; do \
 		ROUTE_HOST=$$(oc get route -l app=cc-leaderboard -o jsonpath='{.items[0].spec.host}' 2>/dev/null); \
+		ROUTE_PATH=$$(oc get route -l app=cc-leaderboard -o jsonpath='{.items[0].spec.path}' 2>/dev/null); \
 		if [ -n "$$ROUTE_HOST" ]; then \
-			ROUTE_URL="https://$$ROUTE_HOST"; \
+			if [ -n "$$ROUTE_PATH" ]; then \
+				ROUTE_URL="https://$$ROUTE_HOST$$ROUTE_PATH"; \
+				BASE_PATH="$$ROUTE_PATH"; \
+			else \
+				ROUTE_URL="https://$$ROUTE_HOST/api/cc-leaderboard-web/"; \
+				BASE_PATH="/api/cc-leaderboard-web/"; \
+			fi; \
 			echo "Detected route URL: $$ROUTE_URL"; \
+			echo "Detected base path: $$BASE_PATH"; \
 			if [ "$$ROUTE_URL" != "$(APP_PUBLIC_URL)" ]; then \
-				echo "Updating ClowdApp with correct APP_PUBLIC_URL..."; \
+				echo "Updating ClowdApp with correct APP_PUBLIC_URL and APP_BASE_URL..."; \
 				APP_URL_INDEX=$$(oc get clowdapp cc-leaderboard -o json | jq -r '.spec.deployments[0].podSpec.env | to_entries | .[] | select(.value.name == "NUXT_PUBLIC_APP_URL") | .key'); \
-				if [ -z "$$APP_URL_INDEX" ]; then \
-					echo "WARNING: Could not find NUXT_PUBLIC_APP_URL in ClowdApp"; \
+				BASE_URL_INDEX=$$(oc get clowdapp cc-leaderboard -o json | jq -r '.spec.deployments[0].podSpec.env | to_entries | .[] | select(.value.name == "NUXT_APP_BASE_URL") | .key'); \
+				if [ -z "$$APP_URL_INDEX" ] || [ -z "$$BASE_URL_INDEX" ]; then \
+					echo "WARNING: Could not find env vars in ClowdApp"; \
 					echo "Falling back to direct deployment env update..."; \
 					oc set env deployment/cc-leaderboard-web \
-						NUXT_PUBLIC_APP_URL="$$ROUTE_URL" 2>/dev/null || true; \
+						NUXT_PUBLIC_APP_URL="$$ROUTE_URL" \
+						NUXT_APP_BASE_URL="$$BASE_PATH" 2>/dev/null || true; \
 				else \
 					echo "Found NUXT_PUBLIC_APP_URL at index $$APP_URL_INDEX"; \
+					echo "Found NUXT_APP_BASE_URL at index $$BASE_URL_INDEX"; \
 					oc patch clowdapp cc-leaderboard --type=json -p="[{ \
 						\"op\": \"replace\", \
 						\"path\": \"/spec/deployments/0/podSpec/env/$$APP_URL_INDEX/value\", \
 						\"value\": \"$$ROUTE_URL\" \
+					}, { \
+						\"op\": \"replace\", \
+						\"path\": \"/spec/deployments/0/podSpec/env/$$BASE_URL_INDEX/value\", \
+						\"value\": \"$$BASE_PATH\" \
 					}]"; \
 				fi; \
 				echo "Waiting for Clowder to reconcile..."; \

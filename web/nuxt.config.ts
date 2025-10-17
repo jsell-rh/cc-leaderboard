@@ -9,6 +9,11 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // App configuration for basepath support
+  app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
+  },
+
   // shadcn config - components are manually imported, no auto-scanning needed
   shadcn: {
     prefix: '',

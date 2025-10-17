@@ -80,13 +80,22 @@ export default defineOAuthGitHubEventHandler({
       },
     })
 
+    // Get baseURL from runtime config for proper redirect with basepath
+    const appConfig = useAppConfig()
+    const baseURL = appConfig.baseURL || useRuntimeConfig().app.baseURL || '/'
+    const homeUrl = `${baseURL}`.replace(/\/+$/, '/') // Ensure single trailing slash
+
     // Always redirect to home - client-side logic will redirect to settings if needed
-    return sendRedirect(event, '/')
+    return sendRedirect(event, homeUrl)
   },
 
   onError(event, error) {
     console.error('GitHub OAuth error:', error)
-    return sendRedirect(event, '/?error=auth_failed')
+    // Get baseURL for error redirect
+    const appConfig = useAppConfig()
+    const baseURL = appConfig.baseURL || useRuntimeConfig().app.baseURL || '/'
+    const errorUrl = `${baseURL}?error=auth_failed`.replace(/\/\//g, '/')
+    return sendRedirect(event, errorUrl)
   },
 })
 

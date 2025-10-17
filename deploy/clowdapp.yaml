@@ -34,6 +34,7 @@ objects:
           webServices:
             public:
               enabled: true
+              apiPath: cc-leaderboard-web
           podSpec:
             image: ${IMAGE}:${IMAGE_TAG}
             ports:
@@ -46,6 +47,9 @@ objects:
               # Nuxt runtime config overrides (NUXT_ prefix required)
               - name: NUXT_PUBLIC_APP_URL
                 value: ${APP_PUBLIC_URL}
+              # Base URL for app routing (includes /api/cc-leaderboard-web/)
+              - name: NUXT_APP_BASE_URL
+                value: ${APP_BASE_URL}
               # GitHub OAuth configuration
               - name: NUXT_OAUTH_GITHUB_CLIENT_ID
                 valueFrom:
@@ -132,8 +136,11 @@ parameters:
   - name: APP_MEMORY_REQUEST
     value: '256Mi'
   - name: APP_PUBLIC_URL
-    description: Public URL for the application
+    description: Public URL for the application (e.g. https://host.com/api/cc-leaderboard-web/)
     required: true
+  - name: APP_BASE_URL
+    description: Base URL path for app routing (e.g. /api/cc-leaderboard-web/)
+    value: '/api/cc-leaderboard-web/'
 
   # Database parameters
   - name: DB_STORAGE_SIZE
