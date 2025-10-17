@@ -9,7 +9,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@nuxt/ui": "^3.0.0",
@@ -25,8 +29,12 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.2",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@vitest/ui": "^1.2.0",
     "drizzle-kit": "^0.29.1",
+    "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
+    "vitest": "^1.2.0",
     "vue-tsc": "^2.1.10"
   }
 }
