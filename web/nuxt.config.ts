@@ -9,9 +9,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // shadcn config - components are manually imported, no auto-scanning needed
   shadcn: {
     prefix: '',
-    componentDir: 'app/components/ui',
   },
 
   runtimeConfig: {
