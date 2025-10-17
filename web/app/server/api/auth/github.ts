@@ -3,6 +3,7 @@ export default defineOAuthGitHubEventHandler({
     redirectURL: process.env.NUXT_PUBLIC_APP_URL
       ? `${process.env.NUXT_PUBLIC_APP_URL}/api/auth/github`
       : undefined,
+    scope: ['user:email'],
   },
   async onSuccess(event, { user, tokens }) {
     const config = useRuntimeConfig()
