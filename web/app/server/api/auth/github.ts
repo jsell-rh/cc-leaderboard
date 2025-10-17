@@ -3,22 +3,24 @@ export default defineOAuthGitHubEventHandler({
     const config = useRuntimeConfig()
 
     // Fetch user's primary verified email
-    const emails = await $fetch<Array<{
-      email: string
-      primary: boolean
-      verified: boolean
-    }>>('https://api.github.com/user/emails', {
+    const emails = await $fetch<
+      Array<{
+        email: string
+        primary: boolean
+        verified: boolean
+      }>
+    >('https://api.github.com/user/emails', {
       headers: {
-        Authorization: `Bearer ${tokens.access_token}`
-      }
+        Authorization: `Bearer ${tokens.access_token}`,
+      },
     })
 
-    const primaryEmail = emails.find(e => e.primary && e.verified)
+    const primaryEmail = emails.find((e) => e.primary && e.verified)
 
     if (!primaryEmail) {
       throw createError({
         statusCode: 403,
-        message: 'No verified primary email found on your GitHub account'
+        message: 'No verified primary email found on your GitHub account',
       })
     }
 
@@ -27,7 +29,7 @@ export default defineOAuthGitHubEventHandler({
     if (requiredDomain && !primaryEmail.email.endsWith(requiredDomain)) {
       throw createError({
         statusCode: 403,
-        message: `Email must be from ${requiredDomain} domain`
+        message: `Email must be from ${requiredDomain} domain`,
       })
     }
 
@@ -37,27 +39,28 @@ export default defineOAuthGitHubEventHandler({
     const { eq } = await import('drizzle-orm')
 
     let dbUser = await db.query.users.findFirst({
-      where: eq(users.githubId, user.id.toString())
+      where: eq(users.githubId, user.id.toString()),
     })
 
     if (!dbUser) {
       // Generate API key
       const apiKey = await generateApiKey(user.id.toString())
 
-      const [newUser] = await db.insert(users).values({
-        githubId: user.id.toString(),
-        email: primaryEmail.email,
-        name: user.name || user.login,
-        avatar: user.avatar_url,
-        apiKey
-      }).returning()
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          githubId: user.id.toString(),
+          email: primaryEmail.email,
+          name: user.name || user.login,
+          avatar: user.avatar_url,
+          apiKey,
+        })
+        .returning()
 
       dbUser = newUser
     } else {
       // Update last seen
-      await db.update(users)
-        .set({ lastSeenAt: new Date() })
-        .where(eq(users.id, dbUser.id))
+      await db.update(users).set({ lastSeenAt: new Date() }).where(eq(users.id, dbUser.id))
     }
 
     // Set user session
@@ -67,8 +70,8 @@ export default defineOAuthGitHubEventHandler({
         githubId: dbUser.githubId,
         email: dbUser.email,
         name: dbUser.name,
-        avatar: dbUser.avatar
-      }
+        avatar: dbUser.avatar,
+      },
     })
 
     return sendRedirect(event, '/')
@@ -77,7 +80,7 @@ export default defineOAuthGitHubEventHandler({
   onError(event, error) {
     console.error('GitHub OAuth error:', error)
     return sendRedirect(event, '/?error=auth_failed')
-  }
+  },
 })
 
 async function generateApiKey(userId: string): Promise<string> {
@@ -87,7 +90,7 @@ async function generateApiKey(userId: string): Promise<string> {
   // Create JWT token as API key
   const payload = {
     sub: userId,
-    iat: Math.floor(Date.now() / 1000)
+    iat: Math.floor(Date.now() / 1000),
   }
 
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url')
