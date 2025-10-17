@@ -28,7 +28,7 @@
             <template v-if="loggedIn">
               <DropdownMenuRoot>
                 <DropdownMenuTrigger
-                  class="flex items-center space-x-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                  class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-6 py-2 flex items-center space-x-3 bg-white border-2 border-purple-200 hover:bg-white/90 hover:border-purple-400 cursor-pointer"
                 >
                   <img
                     v-if="user?.avatar"
