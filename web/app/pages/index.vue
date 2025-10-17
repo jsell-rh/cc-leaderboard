@@ -71,13 +71,31 @@
           </div>
         </div>
 
-        <!-- Step 2: Run Login Command -->
+        <!-- Step 2: Configure CLI -->
         <div class="flex gap-4">
           <div class="flex-shrink-0">
             <div
               class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg"
             >
               2
+            </div>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold text-gray-900 text-lg mb-1">Configure the CLI</h3>
+            <p class="text-gray-600 mb-3">Point the CLI to this server:</p>
+            <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
+              $ npx cc-leaderboard config --api-url {{ apiUrl }}
+            </code>
+          </div>
+        </div>
+
+        <!-- Step 3: Run Login Command -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg"
+            >
+              3
             </div>
           </div>
           <div class="flex-1">
@@ -89,13 +107,13 @@
           </div>
         </div>
 
-        <!-- Step 3: Import Historical Data -->
+        <!-- Step 4: Import Historical Data -->
         <div class="flex gap-4">
           <div class="flex-shrink-0">
             <div
               class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg"
             >
-              3
+              4
             </div>
           </div>
           <div class="flex-1">
@@ -504,6 +522,9 @@ const { user, loggedIn } = useUserSession()
 if (!loggedIn.value) {
   await navigateTo('/login')
 }
+
+const { data: configData } = await useFetch<{ apiUrl: string }>('/api/config')
+const apiUrl = computed(() => configData.value?.apiUrl || 'http://localhost:3000')
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
 

@@ -237,13 +237,11 @@
             </div>
           </div>
           <div class="flex-1">
-            <h3 class="font-semibold text-gray-900 mb-2">Login with the CLI</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">Configure the API URL</h3>
             <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
-              npx cc-leaderboard login
+              npx cc-leaderboard config --api-url {{ apiUrl }}
             </code>
-            <p class="text-xs text-gray-500 mt-2">
-              This will open your browser to authenticate with GitHub
-            </p>
+            <p class="text-xs text-gray-500 mt-2">Point the CLI to this leaderboard server</p>
           </div>
         </div>
 
@@ -257,12 +255,12 @@
             </div>
           </div>
           <div class="flex-1">
-            <h3 class="font-semibold text-gray-900 mb-2">Submit your usage</h3>
+            <h3 class="font-semibold text-gray-900 mb-2">Login with the CLI</h3>
             <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
-              npx cc-leaderboard submit
+              npx cc-leaderboard login
             </code>
             <p class="text-xs text-gray-500 mt-2">
-              Automatically reads your Claude Code usage data from ccusage
+              This will open your browser to authenticate with GitHub
             </p>
           </div>
         </div>
@@ -274,6 +272,26 @@
               class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg"
             >
               3
+            </div>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-900 mb-2">Submit your usage</h3>
+            <code class="block bg-gray-900 text-green-400 px-4 py-3 rounded-lg text-sm font-mono">
+              npx cc-leaderboard submit
+            </code>
+            <p class="text-xs text-gray-500 mt-2">
+              Automatically reads your Claude Code usage data from ccusage
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0">
+            <div
+              class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg"
+            >
+              4
             </div>
           </div>
           <div class="flex-1">
@@ -317,10 +335,13 @@ definePageMeta({
 })
 
 const { data: userData } = await useFetch<UserData>('/api/me')
+const { data: config } = await useFetch<{ apiUrl: string }>('/api/config')
 
 const showKey = ref(false)
 const copied = ref(false)
 const showCliWelcome = ref(false)
+
+const apiUrl = computed(() => config.value?.apiUrl || 'http://localhost:3000')
 
 // Check localStorage for CLI login flag
 onMounted(() => {
