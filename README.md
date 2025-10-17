@@ -48,7 +48,60 @@ Then set up a cron job:
 
 ### For Administrators
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+#### Setting up GitHub OAuth
+
+1. **Create a GitHub OAuth App**
+
+   - Go to https://github.com/settings/developers
+   - Click "New OAuth App"
+   - Fill in the details:
+     - **Application name**: `Claude Code Leaderboard` (or your preferred name)
+     - **Homepage URL**:
+       - Development: `http://localhost:3000`
+       - Production: `https://your-domain.com`
+     - **Authorization callback URL**:
+       - Development: `http://localhost:3000/api/auth/github`
+       - Production: `https://your-domain.com/api/auth/github`
+   - Click "Register application"
+   - Copy the **Client ID** and generate a **Client Secret**
+
+2. **Configure Environment Variables**
+
+```bash
+cd web
+cp .env.example .env
+```
+
+Edit `.env` and add your GitHub OAuth credentials:
+
+```bash
+# GitHub OAuth Configuration
+NUXT_OAUTH_GITHUB_CLIENT_ID=your_github_client_id
+NUXT_OAUTH_GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# JWT Secret for API key generation (change this to a random string)
+NUXT_JWT_SECRET=your-secret-key-change-in-production
+
+# Public Configuration
+NUXT_PUBLIC_APP_URL=http://localhost:3000
+# Optional: Restrict to specific email domain (e.g., @company.com)
+# Leave empty to allow all GitHub users
+NUXT_PUBLIC_REQUIRED_EMAIL_DOMAIN=@example.com
+
+# Database path (optional)
+DATABASE_PATH=./data/leaderboard.db
+```
+
+3. **Start the Application**
+
+```bash
+npm install
+npm run dev
+```
+
+The app will be available at http://localhost:3000
+
+For production deployment, see [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
 
 ## Architecture
 
@@ -73,15 +126,19 @@ cc-leaderboard/
 ## Tech Stack
 
 ### Web App
+
 - **Nuxt 4** - Vue framework with SSR
 - **Vue 3** - UI framework
-- **@nuxt/ui** - Beautiful UI components
+- **ShadCN Vue** - Beautiful UI components
+- **Tailwind CSS** - Utility-first CSS
 - **TypeScript** - Type safety
 - **Drizzle ORM** - Database ORM
 - **SQLite** - Lightweight database
-- **GitHub OAuth** - Authentication
+- **Pino** - Fast structured logging
+- **GitHub OAuth** - Authentication via nuxt-auth-utils
 
 ### CLI
+
 - **Commander.js** - CLI framework
 - **Chalk** - Colored terminal output
 - **Ora** - Loading spinners
@@ -90,15 +147,19 @@ cc-leaderboard/
 ## API Endpoints
 
 ### Authentication
+
 - `GET /api/auth/github` - GitHub OAuth flow
 
 ### User
+
 - `GET /api/me` - Get current user info
 
 ### Submissions
+
 - `POST /api/submit` - Submit usage data
 
 ### Leaderboard
+
 - `GET /api/leaderboard/:period` - Get leaderboard (daily, weekly, monthly, all-time)
 
 ## Security Features
