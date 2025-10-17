@@ -2,8 +2,16 @@ import chalk from 'chalk'
 import cron from 'node-cron'
 import { getConfig, setConfig } from '../config.js'
 
-export async function configCommand(options: { autoSubmit?: string }) {
+export async function configCommand(options: { autoSubmit?: string; apiUrl?: string }) {
   console.log(chalk.bold('\n⚙️  Configure ccleaderboard\n'))
+
+  // Handle API URL configuration
+  if (options.apiUrl) {
+    const url = options.apiUrl.replace(/\/$/, '') // Remove trailing slash
+    setConfig('apiUrl', url)
+    console.log(chalk.green(`✓ API URL set to: ${url}`))
+    console.log()
+  }
 
   if (options.autoSubmit) {
     const schedule = options.autoSubmit.toLowerCase()
