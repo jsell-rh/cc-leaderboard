@@ -23,8 +23,7 @@ ENV GIT_COMMIT=${GIT_COMMIT}
 ENV APP_VERSION=${APP_VERSION}
 
 # Build the Nuxt application
-WORKDIR /app/web
-RUN npm run build
+RUN npm run build:web
 
 # Production image
 FROM registry.access.redhat.com/ubi9/nodejs-20-minimal:latest
