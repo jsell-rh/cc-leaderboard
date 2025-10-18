@@ -1,6 +1,6 @@
 {
   "name": "cc-leaderboard",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "CLI tool to submit Claude Code usage to the leaderboard",
   "type": "module",
   "bin": {
