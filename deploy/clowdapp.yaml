@@ -35,6 +35,8 @@ objects:
             public:
               enabled: true
               apiPath: cc-leaderboard-web
+              whitelistPaths:
+                - /api/cc-leaderboard-web/*
           podSpec:
             image: ${IMAGE}:${IMAGE_TAG}
             ports:
