@@ -49,7 +49,7 @@ npm run dev:cli
 
 # Test CLI locally
 cd cli && npm link
-ccleaderboard --help
+cc-leaderboard --help
 ```
 
 ## Project Structure
@@ -166,10 +166,7 @@ export async function myCommand(options: any) {
 // cli/src/index.ts
 import { myCommand } from './commands/mycommand.js'
 
-program
-  .command('mycommand')
-  .description('Description of my command')
-  .action(myCommand)
+program.command('mycommand').description('Description of my command').action(myCommand)
 ```
 
 ### Adding a New API Endpoint
@@ -188,7 +185,7 @@ Example:
 import { z } from 'zod'
 
 const querySchema = z.object({
-  id: z.string()
+  id: z.string(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -219,7 +216,7 @@ Example:
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'auth' // If authentication required
+  middleware: 'auth', // If authentication required
 })
 </script>
 ```

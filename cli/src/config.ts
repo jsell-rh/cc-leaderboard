@@ -1,7 +1,7 @@
 import Conf from 'conf'
 import keytar from 'keytar'
 
-const SERVICE_NAME = 'ccleaderboard'
+const SERVICE_NAME = 'cc-leaderboard'
 const API_KEY_ACCOUNT = 'api-key'
 
 export interface Config {
@@ -11,7 +11,7 @@ export interface Config {
 }
 
 const config = new Conf<Config>({
-  projectName: 'ccleaderboard',
+  projectName: 'cc-leaderboard',
   defaults: {
     apiUrl: 'http://localhost:3001',
     autoSubmit: 'off',

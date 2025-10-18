@@ -4,7 +4,7 @@ import { getConfig, getApiKey } from '../config.js'
 import { getUserInfo } from '../api-client.js'
 
 export async function statusCommand() {
-  console.log(chalk.bold('\n📈 ccleaderboard Status\n'))
+  console.log(chalk.bold('\n📈 cc-leaderboard Status\n'))
 
   const spinner = ora('Checking authentication...').start()
 
@@ -13,7 +13,11 @@ export async function statusCommand() {
 
     if (!apiKey) {
       spinner.fail('Not authenticated')
-      console.log(chalk.yellow('\nRun ') + chalk.cyan('ccleaderboard login') + chalk.yellow(' to get started'))
+      console.log(
+        chalk.yellow('\nRun ') +
+          chalk.cyan('cc-leaderboard login') +
+          chalk.yellow(' to get started')
+      )
       process.exit(1)
     }
 
@@ -25,7 +29,9 @@ export async function statusCommand() {
     console.log(chalk.white('\nUser:'))
     console.log(chalk.gray('  Name: ') + chalk.cyan(userInfo.name))
     console.log(chalk.gray('  Email: ') + chalk.cyan(userInfo.email))
-    console.log(chalk.gray('  Member since: ') + chalk.cyan(new Date(userInfo.createdAt).toLocaleDateString()))
+    console.log(
+      chalk.gray('  Member since: ') + chalk.cyan(new Date(userInfo.createdAt).toLocaleDateString())
+    )
 
     const config = getConfig()
 
@@ -39,7 +45,6 @@ export async function statusCommand() {
     }
 
     console.log()
-
   } catch (error) {
     spinner.fail('Failed to fetch status')
     console.error(chalk.red('\n' + (error as Error).message))

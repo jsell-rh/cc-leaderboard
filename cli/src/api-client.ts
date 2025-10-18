@@ -15,7 +15,7 @@ export async function submitUsage(
   const apiKey = await getApiKey()
 
   if (!apiKey) {
-    throw new Error('Not authenticated. Run "ccleaderboard login" first.')
+    throw new Error('Not authenticated. Run "cc-leaderboard login" first.')
   }
 
   const response = await fetch(`${config.apiUrl}/api/submit`, {
@@ -42,7 +42,7 @@ export async function getUserInfo(): Promise<any> {
   const apiKey = await getApiKey()
 
   if (!apiKey) {
-    throw new Error('Not authenticated. Run "ccleaderboard login" first.')
+    throw new Error('Not authenticated. Run "cc-leaderboard login" first.')
   }
 
   const response = await fetch(`${config.apiUrl}/api/me`, {

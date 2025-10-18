@@ -3,7 +3,7 @@ import cron from 'node-cron'
 import { getConfig, setConfig } from '../config.js'
 
 export async function configCommand(options: { autoSubmit?: string; apiUrl?: string }) {
-  console.log(chalk.bold('\n⚙️  Configure ccleaderboard\n'))
+  console.log(chalk.bold('\n⚙️  Configure cc-leaderboard\n'))
 
   // Handle API URL configuration
   if (options.apiUrl) {
@@ -47,7 +47,7 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
       console.log(chalk.green(`✓ Auto-submit enabled: ${schedule}`))
       console.log(chalk.gray('\nNext steps:'))
       console.log(chalk.white('  Set up a cron job or use a task scheduler to run:'))
-      console.log(chalk.cyan(`  ccleaderboard submit`))
+      console.log(chalk.cyan(`  cc-leaderboard submit`))
       console.log()
 
       if (schedule === 'daily') {

@@ -110,12 +110,12 @@ export async function loginCommand() {
     console.log(chalk.gray('\nNext steps:'))
     console.log(
       chalk.white('  • Run ') +
-        chalk.cyan('ccleaderboard submit') +
+        chalk.cyan('cc-leaderboard submit') +
         chalk.white(' to submit your usage')
     )
     console.log(
       chalk.white('  • Run ') +
-        chalk.cyan('ccleaderboard config --auto-submit daily') +
+        chalk.cyan('cc-leaderboard config --auto-submit daily') +
         chalk.white(' to enable auto-submit')
     )
     console.log()
