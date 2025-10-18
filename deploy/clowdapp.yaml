@@ -42,10 +42,10 @@ objects:
             ports:
               - name: web
                 protocol: TCP
-                containerPort: 3000
+                containerPort: 8000
             env:
               - name: PORT
-                value: '3000'
+                value: '8000'
               # Nuxt runtime config overrides (NUXT_ prefix required)
               - name: NUXT_PUBLIC_APP_URL
                 value: ${APP_PUBLIC_URL}
