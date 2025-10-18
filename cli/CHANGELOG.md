@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.2...v1.1.3) (2025-10-18)
+
+
+### Bug Fixes
+
+* **cli:** Use response status code instead of response body to determine success. ([2269fad](https://github.com/jsell-rh/cc-leaderboard/commit/2269fadb4f87b6f43fee77231c7edbef75b67b8f))
+
 ## [1.1.2](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.1...v1.1.2) (2025-10-18)
 
 
