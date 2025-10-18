@@ -31,6 +31,10 @@ export default defineNuxtConfig({
 
     // Session configuration - this is where h3 session reads config from
     session: {
+      password:
+        process.env.NUXT_SESSION_PASSWORD ||
+        process.env.NUXT_JWT_SECRET ||
+        'change-me-in-production-min-32-chars-long',
       cookie: {
         // Use the basepath for cookie path to ensure cookies work with subpath deployment
         path: process.env.NUXT_APP_BASE_URL || '/',
