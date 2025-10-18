@@ -10,10 +10,20 @@ const program = new Command()
 
 program
   .name('cc-leaderboard')
-  .description('Submit Claude Code usage to the leaderboard')
+  .description("Submit Claude Code usage to your team's leaderboard")
   .version('0.1.0')
 
-program.command('login').description('Authenticate with the leaderboard').action(loginCommand)
+program
+  .command('config')
+  .description("Configure your team's leaderboard URL and settings (run this first!)")
+  .option('--api-url <url>', "Set the API URL for your team's leaderboard server")
+  .option('--auto-submit <schedule>', 'Enable auto-submit (daily, weekly, off)')
+  .action(configCommand)
+
+program
+  .command('login')
+  .description('Authenticate with the leaderboard via GitHub')
+  .action(loginCommand)
 
 program
   .command('submit')
@@ -21,13 +31,6 @@ program
   .option('--date <date>', 'Date to submit (YYYY-MM-DD format, defaults to today)')
   .option('--all', 'Import all historical usage data')
   .action(submitCommand)
-
-program
-  .command('config')
-  .description('Configure CLI settings')
-  .option('--api-url <url>', 'Set the API URL for the leaderboard server')
-  .option('--auto-submit <schedule>', 'Enable auto-submit (daily, weekly, off)')
-  .action(configCommand)
 
 program
   .command('status')

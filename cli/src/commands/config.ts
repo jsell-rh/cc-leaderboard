@@ -8,8 +8,26 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
   // Handle API URL configuration
   if (options.apiUrl) {
     const url = options.apiUrl.replace(/\/$/, '') // Remove trailing slash
+
+    // Validate URL format
+    try {
+      new URL(url)
+    } catch (error) {
+      console.log(
+        chalk.red('\n❌ Invalid URL format. Please include the protocol (https:// or http://)')
+      )
+      console.log(chalk.gray('Example: https://cc-leaderboard.your-company.com'))
+      process.exit(1)
+    }
+
     setConfig('apiUrl', url)
-    console.log(chalk.green(`✓ API URL set to: ${url}`))
+    console.log(chalk.green(`✓ API URL configured: ${url}`))
+    console.log(chalk.gray('\nNext steps:'))
+    console.log(
+      chalk.white('  Run ') +
+        chalk.cyan('npx cc-leaderboard login') +
+        chalk.white(' to authenticate')
+    )
     console.log()
   }
 

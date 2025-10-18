@@ -1,12 +1,27 @@
 # cc-leaderboard
 
-CLI tool to submit your Claude Code usage to the leaderboard.
+CLI tool to submit your Claude Code usage to your team's leaderboard.
+
+## Configuration
+
+**First time setup:** Your team likely has a dedicated leaderboard instance. Configure the CLI to point to your team's server:
+
+```bash
+npx cc-leaderboard config --api-url https://your-team-leaderboard.com
+```
+
+> **Don't know your team's URL?** Ask your team lead or check your team's documentation.
+>
+> If you run `npx cc-leaderboard login` without configuring first, the CLI will prompt you to enter your team's URL.
 
 ## Quick Start
 
 No installation required! Just use `npx`:
 
 ```bash
+# Configure your team's leaderboard URL (first time only)
+npx cc-leaderboard config --api-url https://your-team-leaderboard.com
+
 # Authenticate with GitHub
 npx cc-leaderboard login
 
@@ -63,13 +78,22 @@ The `--all` flag is perfect for when you first join the leaderboard and want to 
 
 ### `config`
 
-Configure auto-submit settings.
+Configure your team's leaderboard URL and auto-submit settings.
 
 ```bash
+# Set your team's leaderboard URL (required for first-time setup)
+npx cc-leaderboard config --api-url https://your-team-leaderboard.com
+
+# Configure auto-submit
 npx cc-leaderboard config --auto-submit daily
 npx cc-leaderboard config --auto-submit weekly
 npx cc-leaderboard config --auto-submit off
 ```
+
+**Options:**
+
+- `--api-url <url>` - Set the URL for your team's leaderboard server
+- `--auto-submit <schedule>` - Enable automatic daily/weekly submissions
 
 ### `status`
 
