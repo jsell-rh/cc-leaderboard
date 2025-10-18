@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.1...v1.1.2) (2025-10-18)
+
+
+### Bug Fixes
+
+* **deploy:** Fix database filepath ([87f8c49](https://github.com/jsell-rh/cc-leaderboard/commit/87f8c49d4d008567dcef0db595f7029c8875e236))
+* support both API key and session auth in /api/me endpoint ([64c1947](https://github.com/jsell-rh/cc-leaderboard/commit/64c1947cde19c351e3a4a2215cbda239589a49e3))
+
 ## [1.1.1](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.0...v1.1.1) (2025-10-18)
 
 
