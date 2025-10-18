@@ -517,15 +517,21 @@ import { Button } from '~/components/ui/button'
 import type { LeaderboardResponse } from '~/types/api'
 
 const { user, loggedIn } = useUserSession()
+const route = useRoute()
 
 // Build GitHub OAuth URL with basepath support
 const { $config } = useNuxtApp()
 const baseURL = $config.app.baseURL || '/'
 const githubAuthUrl = `${baseURL}api/auth/github`.replace(/\/\//g, '/')
 
-// Redirect to login if not authenticated
+// Redirect to login if not authenticated, preserving error query param
 if (!loggedIn.value) {
-  await navigateTo('/login')
+  const error = route.query.error
+  if (error) {
+    await navigateTo(`/login?error=${error}`)
+  } else {
+    await navigateTo('/login')
+  }
 }
 
 const { data: configData } = await useFetch<{ apiUrl: string }>('/api/config')
