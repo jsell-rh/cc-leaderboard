@@ -76,8 +76,8 @@ objects:
                     name: cc-leaderboard-secrets
                     key: session-password
               # Database configuration (SQLite with Turso/libSQL)
-              - name: NUXT_DATABASE_URL
-                value: 'file:////data/leaderboard.db'
+              - name: DATABASE_PATH
+                value: '/data/leaderboard.db'
               # Required email domain (optional - leave empty to allow all)
               - name: NUXT_PUBLIC_REQUIRED_EMAIL_DOMAIN
                 value: ${REQUIRED_EMAIL_DOMAIN}
