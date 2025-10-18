@@ -1,7 +1,7 @@
 export default defineOAuthGitHubEventHandler({
   config: {
     redirectURL: process.env.NUXT_PUBLIC_APP_URL
-      ? `${process.env.NUXT_PUBLIC_APP_URL}/api/auth/github`
+      ? `${process.env.NUXT_PUBLIC_APP_URL.replace(/\/+$/, '')}/api/auth/github`
       : undefined,
     scope: ['user:email'],
   },
