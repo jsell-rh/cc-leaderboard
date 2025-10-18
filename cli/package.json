@@ -4,7 +4,7 @@
   "description": "CLI tool to submit Claude Code usage to the leaderboard",
   "type": "module",
   "bin": {
-    "cc-leaderboard": "./dist/index.js"
+    "cc-leaderboard": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jsell-rh/cc-leaderboard.git",
+    "url": "git+https://github.com/jsell-rh/cc-leaderboard.git",
     "directory": "cli"
   },
   "homepage": "https://github.com/jsell-rh/cc-leaderboard#readme",
