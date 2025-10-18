@@ -39,6 +39,10 @@ export default defineNuxtConfig({
         // Use the basepath for cookie path to ensure cookies work with subpath deployment
         path: process.env.NUXT_APP_BASE_URL || '/',
         sameSite: 'lax' as const,
+        // Secure only in production (https)
+        secure: process.env.NODE_ENV === 'production',
+        // HttpOnly for security
+        httpOnly: true,
       },
     },
 
