@@ -1,3 +1,26 @@
+# [1.1.0](https://github.com/jsell-rh/cc-leaderboard/compare/v1.0.0...v1.1.0) (2025-10-18)
+
+
+### Bug Fixes
+
+* Correct migrations path in Dockerfile to web/migrations ([e8db4db](https://github.com/jsell-rh/cc-leaderboard/commit/e8db4db34911b7feb77047b479eb2c646125c337))
+* **deploy:** Fix 403 on production Clowdapp route ([b6b1387](https://github.com/jsell-rh/cc-leaderboard/commit/b6b138724a502e6f8115a1752ab17ace7216ce55))
+* **deploy:** Fix healthcheck ports ([f669a27](https://github.com/jsell-rh/cc-leaderboard/commit/f669a279df141aeedd0bbe85de3df3665e9ca01d))
+* **deploy:** Use port 8000 ([68513fc](https://github.com/jsell-rh/cc-leaderboard/commit/68513fc8617d03ec4bf79c43384932f17e830fb0))
+* Include basepath in GitHub OAuth redirect_uri ([daa9724](https://github.com/jsell-rh/cc-leaderboard/commit/daa9724ac0d0c0b0f0df574b273b0c967801d599))
+* Read CLI version from package.json dynamically ([15ff528](https://github.com/jsell-rh/cc-leaderboard/commit/15ff528805bb55ec88adfdd457acafae49ad32c9))
+* Standardize CLI name to 'cc-leaderboard' across codebase ([27228ae](https://github.com/jsell-rh/cc-leaderboard/commit/27228ae3e614c0530cd378645e56618f220642c6))
+* Update Docker build for npm workspace structure ([c1346d6](https://github.com/jsell-rh/cc-leaderboard/commit/c1346d6dec72bba46b75afc4cfafee8cfc3f401e))
+* Use basepath for health check endpoints ([95de30f](https://github.com/jsell-rh/cc-leaderboard/commit/95de30f195c5d10aef554fd33dab72c17c22071d))
+* Use baseURL for GitHub OAuth links in frontend ([fcb5bba](https://github.com/jsell-rh/cc-leaderboard/commit/fcb5bbad05b4fa10fd0a58f419a484c7726e4da0))
+* Use build:web script to build only web workspace in Docker ([26aa609](https://github.com/jsell-rh/cc-leaderboard/commit/26aa6096a6400c159334993fd3eea9f6671dc92e))
+
+
+### Features
+
+* Add comprehensive basepath support for deployment behind subpaths ([7d207bc](https://github.com/jsell-rh/cc-leaderboard/commit/7d207bc4bdd54f297a934a9ec1903e17f2a7f5d4))
+* Improve CLI UX for API URL configuration ([c546db9](https://github.com/jsell-rh/cc-leaderboard/commit/c546db918e0886b2a98bfcc4c64c99586e4e24f9))
+
 # 1.0.0 (2025-10-17)
 
 
