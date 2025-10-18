@@ -107,7 +107,7 @@
               </DropdownMenuRoot>
             </template>
             <template v-else>
-              <a href="/api/auth/github">
+              <a :href="githubAuthUrl">
                 <Button> Sign in with GitHub </Button>
               </a>
             </template>
@@ -161,6 +161,11 @@ import {
 } from 'radix-vue'
 
 const { loggedIn, user, clear } = useUserSession()
+const { $config } = useNuxtApp()
+
+// Build GitHub auth URL with proper basepath
+const baseURL = $config.app.baseURL || '/'
+const githubAuthUrl = `${baseURL}api/auth/github`.replace(/\/\//g, '/')
 
 const handleLogout = async () => {
   await clear()

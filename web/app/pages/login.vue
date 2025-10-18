@@ -78,7 +78,7 @@
 
           <!-- Sign In Button -->
           <div class="pt-4">
-            <a href="/api/auth/github" class="block">
+            <a :href="githubAuthUrl" class="block">
               <Button
                 class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0"
                 size="lg"
@@ -130,6 +130,11 @@
 import { Button } from '~/components/ui/button'
 
 const { loggedIn } = useUserSession()
+const { $config } = useNuxtApp()
+
+// Build GitHub auth URL with proper basepath
+const baseURL = $config.app.baseURL || '/'
+const githubAuthUrl = `${baseURL}api/auth/github`.replace(/\/\//g, '/')
 
 // If already logged in, redirect to home
 if (loggedIn.value) {
