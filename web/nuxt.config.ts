@@ -29,6 +29,15 @@ export default defineNuxtConfig({
     },
     jwtSecret: process.env.NUXT_JWT_SECRET || 'change-me-in-production',
 
+    // Session configuration - this is where h3 session reads config from
+    session: {
+      cookie: {
+        // Use the basepath for cookie path to ensure cookies work with subpath deployment
+        path: process.env.NUXT_APP_BASE_URL || '/',
+        sameSite: 'lax' as const,
+      },
+    },
+
     // Public keys (exposed to client)
     public: {
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
