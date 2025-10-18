@@ -8,6 +8,7 @@ import { loginCommand } from './commands/login.js'
 import { submitCommand } from './commands/submit.js'
 import { configCommand } from './commands/config.js'
 import { statusCommand } from './commands/status.js'
+import { checkSessionsCommand } from './commands/check-sessions.js'
 
 // Read version from package.json dynamically
 const __filename = fileURLToPath(import.meta.url)
@@ -44,5 +45,10 @@ program
   .command('status')
   .description('Show current configuration and recent submissions')
   .action(statusCommand)
+
+program
+  .command('check-sessions')
+  .description('Check for large Claude Code session files that may cause issues')
+  .action(checkSessionsCommand)
 
 program.parse()

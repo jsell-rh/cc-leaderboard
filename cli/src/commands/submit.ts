@@ -46,7 +46,7 @@ export async function submitCommand(options: { date?: string; all?: boolean }) {
 
   try {
     // Run ccusage to get data
-    const { stdout } = await execAsync('npx ccusage@latest daily --json')
+    const { stdout, stderr } = await execAsync('npx ccusage@latest daily --json')
     const usageData: CcusageResponse = JSON.parse(stdout)
 
     if (options.all) {
@@ -152,7 +152,39 @@ export async function submitCommand(options: { date?: string; all?: boolean }) {
     }
   } catch (error) {
     spinner.fail('Submission failed')
-    console.error(chalk.red('\n' + (error as Error).message))
+
+    const errorMessage = (error as Error).message
+
+    // Check for ccusage "Invalid string length" error (large session file issue)
+    if (errorMessage.includes('Invalid string length') || errorMessage.includes('RangeError')) {
+      console.log(chalk.red('\n❌ Claude Code session file is too large for ccusage to process'))
+      console.log(
+        chalk.yellow(
+          '\nThis is a known issue when Claude Code sessions contain large amounts of data.'
+        )
+      )
+      console.log(chalk.white('\n🔧 How to fix this:\n'))
+      console.log(chalk.cyan('1. Close your current Claude Code session'))
+      console.log(chalk.cyan('2. Archive the large session file:'))
+      console.log(chalk.gray('   mkdir -p ~/claude-session-backups'))
+      console.log(
+        chalk.gray('   mv ~/.claude/projects/*/[large-file].jsonl ~/claude-session-backups/')
+      )
+      console.log(chalk.cyan('3. Start a fresh Claude Code session'))
+      console.log(chalk.cyan('4. Try submitting again'))
+      console.log(chalk.white('\n💡 Tips to avoid this:'))
+      console.log(chalk.gray('   • Close/restart Claude Code sessions periodically'))
+      console.log(chalk.gray('   • Avoid running dev servers in background within Claude Code'))
+      console.log(chalk.gray('   • Submit usage data regularly (before sessions get too large)'))
+      console.log(
+        chalk.white('\n📖 More info: ') +
+          chalk.blue('https://github.com/ryoppippi/ccusage/issues/460')
+      )
+      console.log()
+    } else {
+      console.error(chalk.red('\n' + errorMessage))
+    }
+
     process.exit(1)
   }
 }
