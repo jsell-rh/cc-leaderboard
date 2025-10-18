@@ -1,17 +1,25 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'fs'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import { Command } from 'commander'
 import { loginCommand } from './commands/login.js'
 import { submitCommand } from './commands/submit.js'
 import { configCommand } from './commands/config.js'
 import { statusCommand } from './commands/status.js'
 
+// Read version from package.json dynamically
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'))
+
 const program = new Command()
 
 program
   .name('cc-leaderboard')
   .description("Submit Claude Code usage to your team's leaderboard")
-  .version('0.1.0')
+  .version(packageJson.version)
 
 program
   .command('config')
