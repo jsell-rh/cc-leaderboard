@@ -1,3 +1,15 @@
+## [1.1.1](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.0...v1.1.1) (2025-10-18)
+
+
+### Bug Fixes
+
+* Add OAuth error display and fix state mismatch with basepath ([03d7c81](https://github.com/jsell-rh/cc-leaderboard/commit/03d7c818126ce6d28a6b9ce0873e2f54b3cd1d48))
+* Add required session password to runtime config ([3113e5e](https://github.com/jsell-rh/cc-leaderboard/commit/3113e5e3b0c994d0ae8f7194ccbfc958f95ec38f))
+* Add secure and httpOnly flags to session cookies ([1096bfe](https://github.com/jsell-rh/cc-leaderboard/commit/1096bfe81df8589b2fb7dec06d5bd9552baafbe4))
+* Correct CLI bin path format for npm publishing ([1f12ab7](https://github.com/jsell-rh/cc-leaderboard/commit/1f12ab72ed792208140cc9de5a004af17d4091e0))
+* **deploy:** Fix database filepath ([a9d16c0](https://github.com/jsell-rh/cc-leaderboard/commit/a9d16c065ebaf7a2a4d31d6ba4203282eb08a889))
+* Preserve error query param when redirecting to login ([04e0b20](https://github.com/jsell-rh/cc-leaderboard/commit/04e0b20a0905aff2ee6cd6a88a1fc8ca24a8cb45))
+
 # [1.1.0](https://github.com/jsell-rh/cc-leaderboard/compare/v1.0.0...v1.1.0) (2025-10-18)
 
 
