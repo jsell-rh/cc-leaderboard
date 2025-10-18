@@ -51,7 +51,7 @@ export async function getUserInfo(): Promise<any> {
     },
   })
 
-  if (!response.ok) {
+  if (!(response.status === 200)) {
     throw new Error('Failed to fetch user info')
   }
 
