@@ -1,3 +1,20 @@
+# [1.2.0](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.3...v1.2.0) (2025-10-20)
+
+
+### Bug Fixes
+
+* ensure sparkline animation plays on initial load ([e28bf52](https://github.com/jsell-rh/cc-leaderboard/commit/e28bf5217cf9556edc3d40784060d27313ec591d))
+* make sparkline animation more reliable with progressive retry ([1ed8a42](https://github.com/jsell-rh/cc-leaderboard/commit/1ed8a426ff1b250bb9177f93ee0b2c1b551d0ad8))
+* sparkline animation and prevent layout shift in animated numbers ([0371a52](https://github.com/jsell-rh/cc-leaderboard/commit/0371a52046a54f4bb23982270e7c9e368b72e96d))
+* sparkline animation now works on initial load ([8ae4259](https://github.com/jsell-rh/cc-leaderboard/commit/8ae4259a552b0f419c8d123dd9a70f0d5fc9326a))
+
+
+### Features
+
+* add animations for expand/collapse, numbers, and ranking changes ([b58eccf](https://github.com/jsell-rh/cc-leaderboard/commit/b58eccf63cff927fb300d625dab18d8683193d86))
+* **cli:** add per-URL API key storage and debug command ([ae510b5](https://github.com/jsell-rh/cc-leaderboard/commit/ae510b5734f74787d830fb427ee10051259f40b6))
+* implement full year activity heatmap with horizontal scroll ([4bdba7a](https://github.com/jsell-rh/cc-leaderboard/commit/4bdba7a7ae39c7489fbbe7cc0854f56d8d344d9c))
+
 ## [1.1.3](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.2...v1.1.3) (2025-10-18)
 
 
