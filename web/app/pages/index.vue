@@ -210,103 +210,271 @@
       </div>
 
       <!-- Leaderboard Entries -->
-      <div v-else class="space-y-3">
+      <TransitionGroup v-else name="list" tag="div" class="space-y-3">
         <div
           v-for="(entry, index) in data.leaderboard"
           :key="entry.userId"
           :class="[
-            'bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow',
+            'bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow',
             entry.userId === user?.id ? 'ring-2 ring-purple-500' : '',
             index < 3 ? 'shadow-md border-gray-300' : '',
           ]"
         >
-          <!-- Rank Badge -->
-          <div class="absolute top-0 left-0 w-20 h-20 -translate-x-8 -translate-y-8">
-            <div
-              :class="[
-                'absolute inset-0 rounded-full',
-                index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : '',
-                index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' : '',
-                index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800' : '',
-                index > 2 ? 'bg-gradient-to-br from-purple-400 to-blue-500' : '',
-              ]"
-            ></div>
-          </div>
+          <div class="p-6 cursor-pointer" @click="toggleExpanded(entry.userId)">
+            <!-- Rank Badge -->
+            <div class="absolute top-0 left-0 w-20 h-20 -translate-x-8 -translate-y-8">
+              <div
+                :class="[
+                  'absolute inset-0 rounded-full',
+                  index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : '',
+                  index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' : '',
+                  index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800' : '',
+                  index > 2 ? 'bg-gradient-to-br from-purple-400 to-blue-500' : '',
+                ]"
+              ></div>
+            </div>
 
-          <div class="flex items-center justify-between gap-4 relative">
-            <!-- Left Side: Rank + User -->
-            <div class="flex items-center gap-4 flex-1">
-              <!-- Medal/Rank -->
-              <div class="flex-shrink-0 w-16 text-center">
-                <div v-if="index < 3" class="text-4xl">
-                  {{ ['🥇', '🥈', '🥉'][index] }}
+            <div class="flex items-center justify-between gap-4 relative">
+              <!-- Left Side: Rank + User -->
+              <div class="flex items-center gap-4 flex-1">
+                <!-- Medal/Rank -->
+                <div class="flex-shrink-0 w-16 text-center">
+                  <div v-if="index < 3" class="text-4xl">
+                    {{ ['🥇', '🥈', '🥉'][index] }}
+                  </div>
+                  <div v-else class="text-2xl font-bold text-gray-400">#{{ entry.rank }}</div>
                 </div>
-                <div v-else class="text-2xl font-bold text-gray-400">#{{ entry.rank }}</div>
+
+                <!-- Avatar + Name -->
+                <div class="flex items-center gap-3 flex-1">
+                  <img
+                    v-if="entry.avatar"
+                    :src="entry.avatar"
+                    :alt="entry.name"
+                    :class="[
+                      'h-12 w-12 rounded-full object-cover ring-2',
+                      index < 3 ? 'ring-purple-500' : 'ring-gray-300',
+                    ]"
+                  />
+                  <div>
+                    <div class="font-semibold text-gray-900 flex items-center gap-2">
+                      {{ entry.name }}
+                      <span
+                        v-if="entry.userId === user?.id"
+                        class="px-2 py-0.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs rounded-full"
+                      >
+                        You
+                      </span>
+                    </div>
+                    <div
+                      class="text-sm text-gray-500"
+                      :title="`${entry.submissionCount} submission${
+                        entry.submissionCount !== 1 ? 's' : ''
+                      }`"
+                    >
+                      <span v-if="entry.lastSubmissionDate">
+                        Updated {{ formatRelativeTime(entry.lastSubmissionDate) }}
+                      </span>
+                      <span v-else>No submissions yet</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sparkline (hidden on mobile) -->
+                <div v-if="entry.dailyData.length > 1" class="hidden lg:block flex-1 px-8">
+                  <Sparkline
+                    :data="entry.dailyData"
+                    :width="150"
+                    :height="30"
+                    :color="
+                      index === 0
+                        ? '#eab308'
+                        : index === 1
+                          ? '#9ca3af'
+                          : index === 2
+                            ? '#d97706'
+                            : '#8b5cf6'
+                    "
+                  />
+                </div>
+                <div v-else class="hidden lg:block flex-1"></div>
               </div>
 
-              <!-- Avatar + Name -->
-              <div class="flex items-center gap-3 flex-1">
-                <img
-                  v-if="entry.avatar"
-                  :src="entry.avatar"
-                  :alt="entry.name"
-                  :class="[
-                    'h-12 w-12 rounded-full object-cover ring-2',
-                    index < 3 ? 'ring-purple-500' : 'ring-gray-300',
-                  ]"
-                />
-                <div>
-                  <div class="font-semibold text-gray-900 flex items-center gap-2">
-                    {{ entry.name }}
-                    <span
-                      v-if="entry.userId === user?.id"
-                      class="px-2 py-0.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs rounded-full"
-                    >
-                      You
-                    </span>
+              <!-- Right Side: Stats -->
+              <div class="flex gap-6 items-center">
+                <!-- Total Cost -->
+                <div class="text-right">
+                  <div
+                    :class="[
+                      'text-2xl font-bold transition-all duration-500',
+                      index === 0
+                        ? 'text-transparent bg-gradient-to-r from-yellow-600 to-yellow-500 bg-clip-text'
+                        : '',
+                      index === 1 ? 'text-gray-600' : '',
+                      index === 2 ? 'text-amber-700' : '',
+                      index > 2 ? 'text-purple-600' : '',
+                    ]"
+                  >
+                    $<AnimatedNumber :value="entry.totalCost" :decimals="2" />
                   </div>
-                  <div class="text-sm text-gray-500">
-                    {{ entry.submissionCount }} submission{{
-                      entry.submissionCount !== 1 ? 's' : ''
+                  <div class="text-xs text-gray-500">Total Cost</div>
+                </div>
+
+                <!-- Tokens -->
+                <div class="hidden md:block text-right">
+                  <div class="text-sm font-medium text-gray-700 transition-all duration-500">
+                    <AnimatedNumber :value="entry.totalInputTokens + entry.totalOutputTokens" />
+                  </div>
+                  <div class="text-xs text-gray-500">Tokens</div>
+                </div>
+
+                <!-- Expand/Collapse Chevron -->
+                <div class="text-gray-400">
+                  <svg
+                    class="w-5 h-5 transition-transform duration-200"
+                    :class="{ 'rotate-180': expandedEntries.has(entry.userId) }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expandable Details -->
+          <Transition name="expand">
+            <div
+              v-if="expandedEntries.has(entry.userId)"
+              class="border-t border-gray-200 p-6 bg-gray-50 overflow-hidden"
+            >
+              <div class="space-y-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-semibold text-gray-900">Detailed Metrics</h3>
+                  <div class="text-sm text-gray-600">
+                    <span class="font-medium">Last submission:</span>
+                    {{
+                      entry.lastSubmissionDate
+                        ? formatDetailedDate(entry.lastSubmissionDate)
+                        : 'Never'
                     }}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <!-- Right Side: Stats -->
-            <div class="flex gap-6 items-center">
-              <!-- Total Cost -->
-              <div class="text-right">
+                <!-- Main Grid: Heatmap + Token Stats -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <!-- Activity Heatmap (2/3 width on large screens) -->
+                  <div
+                    v-if="entry.dailyData.length > 0"
+                    class="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-6"
+                  >
+                    <div class="mb-6">
+                      <h4 class="font-semibold text-gray-900 text-base">Activity Overview</h4>
+                      <p class="text-sm text-gray-600">Complete usage history (last year)</p>
+                    </div>
+                    <ActivityHeatmap :data="entry.dailyData" />
+                  </div>
+
+                  <!-- Token Breakdown (1/3 width on large screens, stacked) -->
+                  <div class="lg:col-span-1 space-y-4">
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                      <div class="text-sm font-medium text-gray-600 mb-1">Total Tokens</div>
+                      <div class="text-2xl font-bold text-purple-600">
+                        {{ formatNumber(entry.totalInputTokens + entry.totalOutputTokens) }}
+                      </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                      <div class="text-sm font-medium text-gray-600 mb-1">Input Tokens</div>
+                      <div class="text-2xl font-bold text-blue-600">
+                        {{ formatNumber(entry.totalInputTokens) }}
+                      </div>
+                      <div class="text-xs text-gray-500 mt-1">
+                        {{
+                          (
+                            (entry.totalInputTokens /
+                              (entry.totalInputTokens + entry.totalOutputTokens)) *
+                            100
+                          ).toFixed(1)
+                        }}%
+                      </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                      <div class="text-sm font-medium text-gray-600 mb-1">Output Tokens</div>
+                      <div class="text-2xl font-bold text-green-600">
+                        {{ formatNumber(entry.totalOutputTokens) }}
+                      </div>
+                      <div class="text-xs text-gray-500 mt-1">
+                        {{
+                          (
+                            (entry.totalOutputTokens /
+                              (entry.totalInputTokens + entry.totalOutputTokens)) *
+                            100
+                          ).toFixed(1)
+                        }}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Daily Breakdown Table -->
                 <div
-                  :class="[
-                    'text-2xl font-bold',
-                    index === 0
-                      ? 'text-transparent bg-gradient-to-r from-yellow-600 to-yellow-500 bg-clip-text'
-                      : '',
-                    index === 1 ? 'text-gray-600' : '',
-                    index === 2 ? 'text-amber-700' : '',
-                    index > 2 ? 'text-purple-600' : '',
-                  ]"
+                  v-if="entry.dailyData.length > 0"
+                  class="bg-white rounded-lg border border-gray-200 overflow-hidden"
                 >
-                  ${{ entry.totalCost.toFixed(2) }}
+                  <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                    <h4 class="font-semibold text-gray-900">Daily Breakdown</h4>
+                  </div>
+                  <div class="max-h-64 overflow-y-auto">
+                    <table class="w-full">
+                      <thead class="bg-gray-50 sticky top-0">
+                        <tr>
+                          <th
+                            class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase"
+                          >
+                            Date
+                          </th>
+                          <th
+                            class="px-4 py-2 text-right text-xs font-medium text-gray-600 uppercase"
+                          >
+                            Cost
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200">
+                        <tr
+                          v-for="daily in entry.dailyData.slice().reverse()"
+                          :key="daily.date"
+                          class="hover:bg-gray-50"
+                        >
+                          <td class="px-4 py-2 text-sm text-gray-900">
+                            {{ formatDetailedDate(daily.date) }}
+                          </td>
+                          <td class="px-4 py-2 text-sm font-medium text-right text-gray-900">
+                            ${{ daily.cost.toFixed(2) }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div class="text-xs text-gray-500">Total Cost</div>
-              </div>
 
-              <!-- Tokens -->
-              <div class="hidden md:block text-right">
-                <div class="text-sm font-medium text-gray-700">
-                  {{ formatNumber(entry.totalInputTokens + entry.totalOutputTokens) }}
+                <!-- No daily data message -->
+                <div v-else class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                  <p class="text-gray-500">No daily breakdown available for this period</p>
                 </div>
-                <div class="text-xs text-gray-500">Tokens</div>
               </div>
             </div>
-          </div>
-
-          <!-- Expandable Details (hidden for now, can add later) -->
+          </Transition>
         </div>
-      </div>
+      </TransitionGroup>
     </div>
 
     <!-- Error State -->
@@ -538,6 +706,17 @@ const { data: configData } = await useFetch<{ apiUrl: string }>('/api/config')
 const apiUrl = computed(() => configData.value?.apiUrl || 'http://localhost:3000')
 
 const period = ref<'daily' | 'weekly' | 'monthly' | 'all-time'>('all-time')
+const expandedEntries = ref<Set<string>>(new Set())
+
+const toggleExpanded = (userId: string) => {
+  if (expandedEntries.value.has(userId)) {
+    expandedEntries.value.delete(userId)
+  } else {
+    expandedEntries.value.add(userId)
+  }
+  // Trigger reactivity
+  expandedEntries.value = new Set(expandedEntries.value)
+}
 
 const periods = [
   {
@@ -573,6 +752,38 @@ const formatNumber = (num: number) => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
+const formatRelativeTime = (dateString: string | null) => {
+  if (!dateString) return 'never'
+
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInMs = now.getTime() - date.getTime()
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+
+  if (diffInDays === 0) return 'today'
+  if (diffInDays === 1) return 'yesterday'
+  if (diffInDays < 7) return `${diffInDays} days ago`
+  if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7)
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
+  }
+  if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30)
+    return `${months} month${months > 1 ? 's' : ''} ago`
+  }
+  const years = Math.floor(diffInDays / 365)
+  return `${years} year${years > 1 ? 's' : ''} ago`
+}
+
+const formatDetailedDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date)
+}
+
 // Check if coming from CLI login and redirect to settings
 onMounted(() => {
   const cliLoginFlag = localStorage.getItem('cli-login')
@@ -585,10 +796,51 @@ onMounted(() => {
     console.log('Index: No CLI flag, staying on homepage')
   }
 
-  const interval = setInterval(() => {
-    refresh()
+  // Auto-refresh data every 30 seconds without full page reload
+  const interval = setInterval(async () => {
+    // Use refreshNuxtData for smoother updates
+    await refreshNuxtData()
   }, 30000)
 
   onUnmounted(() => clearInterval(interval))
 })
 </script>
+
+<style scoped>
+/* Expand/collapse animation */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease-in-out;
+  max-height: 2000px;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* List/ranking animations */
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>

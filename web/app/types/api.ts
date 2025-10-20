@@ -18,6 +18,8 @@ export interface LeaderboardEntry {
   totalInputTokens: number
   totalOutputTokens: number
   submissionCount: number
+  lastSubmissionDate: string | null
+  dailyData: Array<{ date: string; cost: number }>
 }
 
 export interface LeaderboardResponse {
