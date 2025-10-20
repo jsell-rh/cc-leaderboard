@@ -1,8 +1,8 @@
 import Conf from 'conf'
 import keytar from 'keytar'
+import crypto from 'crypto'
 
 const SERVICE_NAME = 'cc-leaderboard'
-const API_KEY_ACCOUNT = 'api-key'
 
 export interface Config {
   apiUrl: string
@@ -26,14 +26,30 @@ export function setConfig(key: keyof Config, value: any) {
   config.set(key, value)
 }
 
-export async function getApiKey(): Promise<string | null> {
-  return await keytar.getPassword(SERVICE_NAME, API_KEY_ACCOUNT)
+/**
+ * Generate a unique account identifier for the API key based on the URL
+ * This allows different API keys for different leaderboard instances
+ */
+function getApiKeyAccount(apiUrl: string): string {
+  // Create a hash of the URL to use as the account identifier
+  const hash = crypto.createHash('md5').update(apiUrl).digest('hex').substring(0, 8)
+  return `api-key-${hash}`
 }
 
-export async function setApiKey(apiKey: string): Promise<void> {
-  await keytar.setPassword(SERVICE_NAME, API_KEY_ACCOUNT, apiKey)
+export async function getApiKey(apiUrl?: string): Promise<string | null> {
+  const url = apiUrl || getConfig().apiUrl
+  const account = getApiKeyAccount(url)
+  return await keytar.getPassword(SERVICE_NAME, account)
 }
 
-export async function deleteApiKey(): Promise<void> {
-  await keytar.deletePassword(SERVICE_NAME, API_KEY_ACCOUNT)
+export async function setApiKey(apiKey: string, apiUrl?: string): Promise<void> {
+  const url = apiUrl || getConfig().apiUrl
+  const account = getApiKeyAccount(url)
+  await keytar.setPassword(SERVICE_NAME, account, apiKey)
+}
+
+export async function deleteApiKey(apiUrl?: string): Promise<void> {
+  const url = apiUrl || getConfig().apiUrl
+  const account = getApiKeyAccount(url)
+  await keytar.deletePassword(SERVICE_NAME, account)
 }
