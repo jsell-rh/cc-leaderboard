@@ -85,6 +85,9 @@ const animatePath = () => {
   try {
     const length = pathRef.value.getTotalLength()
 
+    // Sometimes getTotalLength() returns 0 if the element isn't fully ready
+    if (length === 0) return
+
     // Temporarily disable transition to set initial state
     pathRef.value.style.transition = 'none'
     pathRef.value.style.strokeDasharray = `${length}`
@@ -109,22 +112,38 @@ const animatePath = () => {
   }
 }
 
-// Animate on mount and when data changes
-onMounted(() => {
-  previousPoints.value = polylinePoints.value
+const tryAnimate = () => {
+  if (!pathRef.value || hasAnimated.value) return
 
-  // Try immediately
-  if (pathRef.value) {
-    hasAnimated.value = true
-    animatePath()
-  } else {
-    // If not ready, wait and try again
-    setTimeout(() => {
-      if (pathRef.value && !hasAnimated.value) {
-        hasAnimated.value = true
-        animatePath()
-      }
-    }, 100)
+  try {
+    const length = pathRef.value.getTotalLength()
+    // Only proceed if we have a valid length
+    if (length > 0) {
+      hasAnimated.value = true
+      animatePath()
+    }
+  } catch {
+    // Element not ready yet, will retry
+  }
+}
+
+// Watch pathRef and try to animate when it becomes available
+watch(pathRef, (newRef) => {
+  if (newRef && !hasAnimated.value) {
+    previousPoints.value = polylinePoints.value
+
+    // Try immediately
+    tryAnimate()
+
+    // If that didn't work, keep trying with increasing delays
+    if (!hasAnimated.value) {
+      const delays = [10, 50, 100, 200]
+      delays.forEach((delay) => {
+        setTimeout(() => {
+          if (!hasAnimated.value) tryAnimate()
+        }, delay)
+      })
+    }
   }
 })
 
