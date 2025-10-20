@@ -77,25 +77,62 @@ const polylinePoints = computed(() => {
 
 const pathRef = ref<SVGPolylineElement | null>(null)
 const previousPoints = ref<string>('')
+const hasAnimated = ref(false)
 
 const animatePath = () => {
-  if (pathRef.value) {
+  if (!pathRef.value) return
+
+  try {
     const length = pathRef.value.getTotalLength()
+
+    // Temporarily disable transition to set initial state
+    pathRef.value.style.transition = 'none'
     pathRef.value.style.strokeDasharray = `${length}`
     pathRef.value.style.strokeDashoffset = `${length}`
 
-    // Force reflow to restart animation
-    void pathRef.value.offsetWidth
+    // Force browser to acknowledge the style change
+    pathRef.value.offsetHeight // trigger reflow
 
-    pathRef.value.style.strokeDashoffset = '0'
+    // Re-enable transition and animate in next frame
+    requestAnimationFrame(() => {
+      if (pathRef.value) {
+        pathRef.value.style.transition = 'stroke-dashoffset 1s ease-in-out'
+        requestAnimationFrame(() => {
+          if (pathRef.value) {
+            pathRef.value.style.strokeDashoffset = '0'
+          }
+        })
+      }
+    })
+  } catch (error) {
+    console.error('Failed to animate sparkline:', error)
   }
 }
 
-// Animate path on mount and when data actually changes
+// Animate on mount and when data changes
+onMounted(() => {
+  previousPoints.value = polylinePoints.value
+
+  // Try immediately
+  if (pathRef.value) {
+    hasAnimated.value = true
+    animatePath()
+  } else {
+    // If not ready, wait and try again
+    setTimeout(() => {
+      if (pathRef.value && !hasAnimated.value) {
+        hasAnimated.value = true
+        animatePath()
+      }
+    }, 100)
+  }
+})
+
+// Animate when data actually changes
 watch(
   polylinePoints,
   (newPoints) => {
-    if (newPoints !== previousPoints.value) {
+    if (newPoints !== previousPoints.value && hasAnimated.value) {
       previousPoints.value = newPoints
       nextTick(() => {
         animatePath()
@@ -104,34 +141,6 @@ watch(
   },
   { flush: 'post' }
 )
-
-onMounted(() => {
-  previousPoints.value = polylinePoints.value
-  // Use nextTick to ensure SVG is fully rendered
-  nextTick(() => {
-    // Add a small delay to ensure the element is fully ready
-    setTimeout(() => {
-      if (pathRef.value) {
-        try {
-          const length = pathRef.value.getTotalLength()
-          pathRef.value.style.strokeDasharray = `${length}`
-          pathRef.value.style.strokeDashoffset = `${length}`
-
-          // Trigger animation
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              if (pathRef.value) {
-                pathRef.value.style.strokeDashoffset = '0'
-              }
-            })
-          })
-        } catch (error) {
-          console.error('Failed to animate sparkline:', error)
-        }
-      }
-    }, 50)
-  })
-})
 </script>
 
 <style scoped>

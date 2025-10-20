@@ -1,5 +1,5 @@
 <template>
-  <span>{{ displayValue }}</span>
+  <span class="animated-number" :style="{ minWidth: minWidth }">{{ displayValue }}</span>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +25,13 @@ const formatValue = (value: number): string => {
 
 const displayValue = ref(formatValue(0))
 const tweenedValue = ref(0)
+
+// Calculate min-width based on the final formatted value to prevent layout shift
+const minWidth = computed(() => {
+  const finalFormatted = formatValue(props.value)
+  // Approximate: 0.6em per character
+  return `${finalFormatted.length * 0.6}em`
+})
 
 const animateToValue = (targetValue: number) => {
   const startValue = tweenedValue.value
@@ -68,3 +75,11 @@ watch(
   }
 )
 </script>
+
+<style scoped>
+.animated-number {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+</style>
