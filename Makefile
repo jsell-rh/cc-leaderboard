@@ -27,6 +27,12 @@ GITHUB_CLIENT_SECRET ?=
 # Required email domain (optional - leave empty to allow all domains)
 REQUIRED_EMAIL_DOMAIN ?= @redhat.com
 
+# JWT and session secrets (optional - will generate random if not set)
+# IMPORTANT: Set these to persist API keys across deployments
+# Generate with: openssl rand -base64 32
+NUXT_JWT_SECRET ?=
+NUXT_SESSION_PASSWORD ?=
+
 # Version info for Docker builds
 GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 APP_VERSION ?= $(shell node -p "require('./web/package.json').version" 2>/dev/null || echo "0.0.0")
@@ -90,9 +96,22 @@ deploy-ephemeral-local: build-local ## Build and deploy locally to ephemeral nam
 	oc project $(BONFIRE_NAMESPACE)
 	@echo "Creating required secrets..."
 	@echo "Creating JWT and session secrets..."
-	@oc create secret generic cc-leaderboard-secrets \
-		--from-literal=jwt-secret=$$(openssl rand -base64 32) \
-		--from-literal=session-password=$$(openssl rand -base64 32) \
+	@if [ -z "$(NUXT_JWT_SECRET)" ]; then \
+		echo "WARNING: NUXT_JWT_SECRET not set, generating random secret"; \
+		echo "This will invalidate existing API keys. Set NUXT_JWT_SECRET to persist across deployments."; \
+		JWT_SECRET=$$(openssl rand -base64 32); \
+	else \
+		echo "Using NUXT_JWT_SECRET from environment"; \
+		JWT_SECRET="$(NUXT_JWT_SECRET)"; \
+	fi; \
+	if [ -z "$(NUXT_SESSION_PASSWORD)" ]; then \
+		SESSION_PASSWORD=$$(openssl rand -base64 32); \
+	else \
+		SESSION_PASSWORD="$(NUXT_SESSION_PASSWORD)"; \
+	fi; \
+	oc create secret generic cc-leaderboard-secrets \
+		--from-literal=jwt-secret=$$JWT_SECRET \
+		--from-literal=session-password=$$SESSION_PASSWORD \
 		--dry-run=client -o yaml | oc apply -f -
 	@echo "Creating GitHub OAuth secrets..."
 	@if [ -z "$(GITHUB_CLIENT_ID)" ] || [ -z "$(GITHUB_CLIENT_SECRET)" ]; then \
