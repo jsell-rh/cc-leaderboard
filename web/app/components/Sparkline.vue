@@ -1,35 +1,36 @@
 <template>
-  <svg
-    v-if="points.length > 1"
-    :width="width"
-    :height="height"
-    class="sparkline"
-    :viewBox="`0 0 ${width} ${height}`"
-    preserveAspectRatio="none"
-  >
-    <polyline
-      :key="polylinePoints"
-      ref="pathRef"
-      :points="polylinePoints"
-      fill="none"
-      :stroke="color"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="sparkline-path"
-    />
-    <circle
-      v-if="showDots"
-      v-for="(point, index) in normalizedPoints"
-      :key="index"
-      :cx="point.x"
-      :cy="point.y"
-      :r="dotRadius"
-      :fill="color"
-      class="sparkline-dot"
-      :style="{ animationDelay: `${0.5 + index * 0.05}s` }"
-    />
-  </svg>
+  <ClientOnly>
+    <svg
+      v-if="points.length > 1"
+      :width="width"
+      :height="height"
+      class="sparkline"
+      :viewBox="`0 0 ${width} ${height}`"
+      preserveAspectRatio="none"
+    >
+      <polyline
+        ref="pathRef"
+        :points="polylinePoints"
+        fill="none"
+        :stroke="color"
+        :stroke-width="strokeWidth"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="sparkline-path"
+      />
+      <circle
+        v-if="showDots"
+        v-for="(point, index) in normalizedPoints"
+        :key="index"
+        :cx="point.x"
+        :cy="point.y"
+        :r="dotRadius"
+        :fill="color"
+        class="sparkline-dot"
+        :style="{ animationDelay: `${1 + index * 0.05}s` }"
+      />
+    </svg>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -108,20 +109,27 @@ onMounted(() => {
   previousPoints.value = polylinePoints.value
   // Use nextTick to ensure SVG is fully rendered
   nextTick(() => {
-    if (pathRef.value) {
-      const length = pathRef.value.getTotalLength()
-      pathRef.value.style.strokeDasharray = `${length}`
-      pathRef.value.style.strokeDashoffset = `${length}`
+    // Add a small delay to ensure the element is fully ready
+    setTimeout(() => {
+      if (pathRef.value) {
+        try {
+          const length = pathRef.value.getTotalLength()
+          pathRef.value.style.strokeDasharray = `${length}`
+          pathRef.value.style.strokeDashoffset = `${length}`
 
-      // Trigger animation after a brief delay to ensure styles are applied
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (pathRef.value) {
-            pathRef.value.style.strokeDashoffset = '0'
-          }
-        })
-      })
-    }
+          // Trigger animation
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (pathRef.value) {
+                pathRef.value.style.strokeDashoffset = '0'
+              }
+            })
+          })
+        } catch (error) {
+          console.error('Failed to animate sparkline:', error)
+        }
+      }
+    }, 50)
   })
 })
 </script>
