@@ -48,28 +48,95 @@ export default defineEventHandler(async (event) => {
       break
   }
 
-  // Aggregate submissions by user (only show users with submissions in this period)
-  let query = db
+  // Get all users who have at least one submission
+  const usersWithSubmissions = await db
+    .selectDistinct({ userId: submissions.userId })
+    .from(submissions)
+
+  const userIds = usersWithSubmissions.map((u) => u.userId)
+
+  // Build subquery for period-specific submissions
+  const periodSubmissionsSubquery = db.$with('period_submissions').as(
+    db
+      .select({
+        userId: submissions.userId,
+        dailyCost: submissions.dailyCost,
+        inputTokens: submissions.inputTokens,
+        outputTokens: submissions.outputTokens,
+        id: submissions.id,
+      })
+      .from(submissions)
+      .where(dateFilter || sql`1=1`)
+  )
+
+  // Build subquery for latest submission date (across all time)
+  const latestSubmissionSubquery = db.$with('latest_submission').as(
+    db
+      .select({
+        userId: submissions.userId,
+        lastSubmissionDate: sql<string>`MAX(${submissions.date})`.as('last_submission_date'),
+      })
+      .from(submissions)
+      .groupBy(submissions.userId)
+  )
+
+  // Main query: get all users with left join to period submissions and latest dates
+  const results = await db
+    .with(periodSubmissionsSubquery, latestSubmissionSubquery)
     .select({
       userId: users.id,
       name: users.name,
       email: users.email,
       avatar: users.avatar,
-      totalCost: sql<number>`SUM(${submissions.dailyCost})`.as('total_cost'),
-      totalInputTokens: sql<number>`SUM(${submissions.inputTokens})`.as('total_input_tokens'),
-      totalOutputTokens: sql<number>`SUM(${submissions.outputTokens})`.as('total_output_tokens'),
-      submissionCount: sql<number>`COUNT(${submissions.id})`.as('submission_count'),
+      totalCost: sql<number>`COALESCE(SUM(${periodSubmissionsSubquery.dailyCost}), 0)`.as(
+        'total_cost'
+      ),
+      totalInputTokens: sql<number>`COALESCE(SUM(${periodSubmissionsSubquery.inputTokens}), 0)`.as(
+        'total_input_tokens'
+      ),
+      totalOutputTokens:
+        sql<number>`COALESCE(SUM(${periodSubmissionsSubquery.outputTokens}), 0)`.as(
+          'total_output_tokens'
+        ),
+      submissionCount: sql<number>`COUNT(${periodSubmissionsSubquery.id})`.as('submission_count'),
+      lastSubmissionDate: latestSubmissionSubquery.lastSubmissionDate,
+    })
+    .from(users)
+    .leftJoin(periodSubmissionsSubquery, sql`${users.id} = ${periodSubmissionsSubquery.userId}`)
+    .leftJoin(latestSubmissionSubquery, sql`${users.id} = ${latestSubmissionSubquery.userId}`)
+    .where(sql`${users.id} IN ${userIds}`)
+    .groupBy(
+      users.id,
+      users.name,
+      users.email,
+      users.avatar,
+      latestSubmissionSubquery.lastSubmissionDate
+    )
+    .orderBy(desc(sql`total_cost`))
+
+  // Fetch daily breakdown for each user (last 365 days, regardless of period selected)
+  // This shows full activity overview in detailed view, while tabs control ranking order
+  const dailyBreakdownMap = new Map<number, Array<{ date: string; cost: number }>>()
+
+  const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+  const activityDataFilter = gte(submissions.date, oneYearAgo.toISOString().split('T')[0])
+
+  const dailyData = await db
+    .select({
+      userId: submissions.userId,
+      date: submissions.date,
+      cost: submissions.dailyCost,
     })
     .from(submissions)
-    .innerJoin(users, sql`${users.id} = ${submissions.userId}`)
+    .where(activityDataFilter)
+    .orderBy(submissions.date)
 
-  if (dateFilter) {
-    query = query.where(dateFilter) as typeof query
+  for (const row of dailyData) {
+    if (!dailyBreakdownMap.has(row.userId)) {
+      dailyBreakdownMap.set(row.userId, [])
+    }
+    dailyBreakdownMap.get(row.userId)!.push({ date: row.date, cost: row.cost })
   }
-
-  const results = await query
-    .groupBy(users.id, users.name, users.email, users.avatar)
-    .orderBy(desc(sql`total_cost`))
 
   return {
     period: validation.data,
@@ -82,6 +149,8 @@ export default defineEventHandler(async (event) => {
       totalInputTokens: row.totalInputTokens,
       totalOutputTokens: row.totalOutputTokens,
       submissionCount: row.submissionCount,
+      lastSubmissionDate: row.lastSubmissionDate,
+      dailyData: dailyBreakdownMap.get(row.userId) || [],
     })),
   }
 })
