@@ -13,9 +13,9 @@ export default defineEventHandler(async (event) => {
 
   const db = getDatabase()
 
-  // Find the user
+  // Find the user by database ID
   const dbUser = await db.query.users.findFirst({
-    where: eq(users.githubId, session.user.id.toString()),
+    where: eq(users.id, session.user.id),
   })
 
   if (!dbUser) {

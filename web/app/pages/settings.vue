@@ -205,44 +205,95 @@
             {{ copied ? 'Copied!' : 'Copy' }}
           </Button>
 
-          <Button
-            variant="destructive"
-            @click="regenerateApiKey"
-            :disabled="regenerating"
-            class="flex-1"
-          >
-            <svg
-              v-if="!regenerating"
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              />
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            {{ regenerating ? 'Regenerating...' : 'Regenerate' }}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger as-child>
+              <Button variant="destructive" :disabled="regenerating" class="flex-1">
+                <svg
+                  v-if="!regenerating"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  />
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                {{ regenerating ? 'Regenerating...' : 'Regenerate' }}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will invalidate your current API key. You'll need to update the CLI with the
+                  new key using
+                  <code class="bg-gray-100 px-1 py-0.5 rounded">npx cc-leaderboard login</code>.
+                  <br /><br />
+                  Are you sure you want to continue?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction @click="regenerateApiKey" class="bg-red-600 hover:bg-red-700">
+                  Regenerate
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
+
+        <Transition
+          enter-active-class="transition ease-out duration-300"
+          enter-from-class="opacity-0 transform -translate-y-2"
+          enter-to-class="opacity-100 transform translate-y-0"
+          leave-active-class="transition ease-in duration-200"
+          leave-from-class="opacity-100 transform translate-y-0"
+          leave-to-class="opacity-0 transform -translate-y-2"
+        >
+          <div
+            v-if="showSuccessMessage"
+            class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg"
+          >
+            <div class="flex gap-2 text-sm text-green-800">
+              <svg
+                class="w-5 h-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>
+                <strong>Success!</strong> Your API key has been regenerated. Make sure to copy it
+                now!
+              </span>
+            </div>
+          </div>
+        </Transition>
 
         <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <div class="flex gap-2 text-sm text-yellow-800">
@@ -363,7 +414,8 @@
               npx cc-leaderboard config --auto-submit daily
             </code>
             <p class="text-xs text-gray-500 mt-2">
-              Set up a cron job to automatically submit your usage once per day
+              This will automatically set up a cron job to submit your usage once per day (or use
+              <code class="bg-gray-100 px-1 rounded">weekly</code> instead)
             </p>
           </div>
         </div>
@@ -391,6 +443,17 @@
 
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '~/components/ui/alert-dialog'
 import type { UserData } from '~/types/api'
 
 definePageMeta({
@@ -404,6 +467,7 @@ const showKey = ref(false)
 const copied = ref(false)
 const showCliWelcome = ref(false)
 const regenerating = ref(false)
+const showSuccessMessage = ref(false)
 
 const apiUrl = computed(() => config.value?.apiUrl || 'http://localhost:3000')
 
@@ -434,32 +498,27 @@ const copyApiKey = async () => {
 }
 
 const regenerateApiKey = async () => {
-  if (
-    !confirm(
-      "Are you sure you want to regenerate your API key? This will invalidate your current key and you'll need to update the CLI."
-    )
-  ) {
-    return
-  }
-
   regenerating.value = true
 
   try {
-    const { data } = await $fetch<{ apiKey: string }>('/api/regenerate-key', {
+    const data = await $fetch<{ apiKey: string }>('/api/regenerate-key', {
       method: 'POST',
     })
 
-    if (data.value && userData.value) {
+    if (data && userData.value) {
       // Update the local user data with the new API key
-      userData.value.apiKey = data.value.apiKey
+      userData.value.apiKey = data.apiKey
       showKey.value = true
 
       // Show success message
-      alert('API key regenerated successfully! Make sure to copy your new key.')
+      showSuccessMessage.value = true
+      setTimeout(() => {
+        showSuccessMessage.value = false
+      }, 5000)
     }
   } catch (error) {
     console.error('Error regenerating API key:', error)
-    alert('Failed to regenerate API key. Please try again.')
+    // You could add an error message display here
   } finally {
     regenerating.value = false
   }
