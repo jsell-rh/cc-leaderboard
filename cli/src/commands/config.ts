@@ -1,8 +1,9 @@
 import chalk from 'chalk'
 import cron from 'node-cron'
 import { execSync } from 'child_process'
-import { homedir } from 'os'
-import { existsSync } from 'fs'
+import { homedir, tmpdir } from 'os'
+import { existsSync, writeFileSync, unlinkSync } from 'fs'
+import { join } from 'path'
 import { getConfig, setConfig } from '../config.js'
 
 async function setupCronJob(schedule: 'daily' | 'weekly') {
@@ -73,9 +74,19 @@ async function setupCronJob(schedule: 'daily' | 'weekly') {
     lines.push(`# cc-leaderboard auto-submit (${schedule})`)
     lines.push(cronEntry)
 
-    // Install new crontab
+    // Install new crontab using temp file approach (avoids permission issues)
     const newCrontab = lines.join('\n') + '\n'
-    execSync('crontab -', { input: newCrontab })
+    const tmpFile = join(tmpdir(), `crontab-${Date.now()}.tmp`)
+    try {
+      writeFileSync(tmpFile, newCrontab)
+      execSync(`crontab "${tmpFile}"`)
+      unlinkSync(tmpFile)
+    } catch (error) {
+      try {
+        unlinkSync(tmpFile)
+      } catch {}
+      throw error
+    }
 
     console.log(chalk.green('✓ Cron job installed successfully!'))
     console.log(chalk.gray('\nSchedule: ') + chalk.white(cronSchedule))
@@ -111,7 +122,17 @@ async function removeCronJob() {
     // Install updated crontab
     if (lines.length > 0 && lines.some((line) => line.trim() !== '')) {
       const newCrontab = lines.join('\n') + '\n'
-      execSync('crontab -', { input: newCrontab })
+      const tmpFile = join(tmpdir(), `crontab-${Date.now()}.tmp`)
+      try {
+        writeFileSync(tmpFile, newCrontab)
+        execSync(`crontab "${tmpFile}"`)
+        unlinkSync(tmpFile)
+      } catch (error) {
+        try {
+          unlinkSync(tmpFile)
+        } catch {}
+        throw error
+      }
     } else {
       // Remove crontab entirely if empty
       try {
