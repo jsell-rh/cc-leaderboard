@@ -1,3 +1,19 @@
+# [1.3.0](https://github.com/jsell-rh/cc-leaderboard/compare/v1.2.0...v1.3.0) (2025-10-22)
+
+
+### Bug Fixes
+
+* **cli:** improve cron setup fallback for SELinux environments ([1289634](https://github.com/jsell-rh/cc-leaderboard/commit/1289634935fda4a453554771faa1d4edb22d72c3))
+* **cli:** use temp file for crontab to avoid permission issues ([4e8a416](https://github.com/jsell-rh/cc-leaderboard/commit/4e8a416ada24b454229eaf93a7591a9ef29a076a))
+* **deploy:** respect NUXT_JWT_SECRET env var to persist API keys ([0b5a9d6](https://github.com/jsell-rh/cc-leaderboard/commit/0b5a9d65881032302ab02fba5795faf77fbd9711))
+
+
+### Features
+
+* add AlertDialog components and automatic cron job setup ([426e84f](https://github.com/jsell-rh/cc-leaderboard/commit/426e84f7b8568fb47bdc279a74fad4fbc2b30598))
+* add API key regeneration functionality ([0042372](https://github.com/jsell-rh/cc-leaderboard/commit/00423726ec339b3f1739cdf3e782728087434a13))
+* **cli:** add 'frequent' auto-submit option for every 10 minutes ([5017683](https://github.com/jsell-rh/cc-leaderboard/commit/501768369e451014c40c72c89c02793cc292662f))
+
 # [1.2.0](https://github.com/jsell-rh/cc-leaderboard/compare/v1.1.3...v1.2.0) (2025-10-20)
 
 
