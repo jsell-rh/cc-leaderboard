@@ -201,29 +201,39 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
       } catch (error) {
         // Show manual instructions as fallback
         console.log(chalk.white('Manual setup instructions:'))
-        console.log(chalk.gray('  Run: ') + chalk.cyan('crontab -e'))
-        console.log(chalk.gray('  Add this line:\n'))
+        console.log(chalk.gray('  Note: This can happen due to SELinux restrictions.\n'))
 
         const home = homedir()
         const shellConfigs = ['.bashrc', '.bash_profile', '.zshrc', '.profile']
         const shellConfig =
           shellConfigs.find((config) => existsSync(`${home}/${config}`)) || '.bashrc'
 
+        let cronLine = ''
         if (schedule === 'daily') {
+          cronLine = `0 18 * * * /usr/bin/bash -c ". ${home}/${shellConfig} && npx -y cc-leaderboard submit"`
           console.log(
-            chalk.white(
-              `  0 18 * * * /usr/bin/bash -c ". ${home}/${shellConfig} && npx -y cc-leaderboard submit"`
-            )
+            chalk.gray('  To auto-submit daily at 6 PM, run: ') + chalk.cyan('crontab -e')
           )
-          console.log(chalk.gray('\n  This runs every day at 6 PM'))
+          console.log(chalk.gray('  Then add this line:\n'))
+          console.log(chalk.white(`  ${cronLine}`))
         } else if (schedule === 'weekly') {
+          cronLine = `0 18 * * 0 /usr/bin/bash -c ". ${home}/${shellConfig} && npx -y cc-leaderboard submit"`
           console.log(
-            chalk.white(
-              `  0 18 * * 0 /usr/bin/bash -c ". ${home}/${shellConfig} && npx -y cc-leaderboard submit"`
-            )
+            chalk.gray('  To auto-submit weekly on Sundays at 6 PM, run: ') +
+              chalk.cyan('crontab -e')
           )
-          console.log(chalk.gray('\n  This runs every Sunday at 6 PM'))
+          console.log(chalk.gray('  Then add this line:\n'))
+          console.log(chalk.white(`  ${cronLine}`))
         }
+
+        // Offer to create a helper script
+        console.log()
+        console.log(chalk.gray('  Or copy and run this command to add it automatically:'))
+        console.log(
+          chalk.cyan(
+            `  (crontab -l 2>/dev/null | grep -v cc-leaderboard; echo "${cronLine}") | crontab -`
+          )
+        )
       }
     }
   } else {
