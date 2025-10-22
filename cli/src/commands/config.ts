@@ -6,7 +6,7 @@ import { existsSync, writeFileSync, unlinkSync } from 'fs'
 import { join } from 'path'
 import { getConfig, setConfig } from '../config.js'
 
-async function setupCronJob(schedule: 'daily' | 'weekly') {
+async function setupCronJob(schedule: 'daily' | 'weekly' | 'frequent') {
   try {
     // Detect shell config file
     const home = homedir()
@@ -51,8 +51,10 @@ async function setupCronJob(schedule: 'daily' | 'weekly') {
     let cronSchedule: string
     if (schedule === 'daily') {
       cronSchedule = '0 18 * * *' // Daily at 6 PM
-    } else {
+    } else if (schedule === 'weekly') {
       cronSchedule = '0 18 * * 0' // Weekly on Sunday at 6 PM
+    } else {
+      cronSchedule = '*/10 * * * *' // Every 10 minutes
     }
 
     // Create the cron command with proper environment sourcing
@@ -181,8 +183,8 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
   if (options.autoSubmit) {
     const schedule = options.autoSubmit.toLowerCase()
 
-    if (!['daily', 'weekly', 'off'].includes(schedule)) {
-      console.error(chalk.red('Invalid schedule. Must be one of: daily, weekly, off'))
+    if (!['daily', 'weekly', 'frequent', 'off'].includes(schedule)) {
+      console.error(chalk.red('Invalid schedule. Must be one of: daily, weekly, frequent, off'))
       process.exit(1)
     }
 
@@ -197,7 +199,7 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
 
       // Attempt to set up cron job automatically
       try {
-        await setupCronJob(schedule as 'daily' | 'weekly')
+        await setupCronJob(schedule as 'daily' | 'weekly' | 'frequent')
       } catch (error) {
         // Show manual instructions as fallback
         console.log(chalk.white('Manual setup instructions:'))
@@ -221,6 +223,13 @@ export async function configCommand(options: { autoSubmit?: string; apiUrl?: str
           console.log(
             chalk.gray('  To auto-submit weekly on Sundays at 6 PM, run: ') +
               chalk.cyan('crontab -e')
+          )
+          console.log(chalk.gray('  Then add this line:\n'))
+          console.log(chalk.white(`  ${cronLine}`))
+        } else if (schedule === 'frequent') {
+          cronLine = `*/10 * * * * /usr/bin/bash -c ". ${home}/${shellConfig} && npx -y cc-leaderboard submit"`
+          console.log(
+            chalk.gray('  To auto-submit every 10 minutes, run: ') + chalk.cyan('crontab -e')
           )
           console.log(chalk.gray('  Then add this line:\n'))
           console.log(chalk.white(`  ${cronLine}`))

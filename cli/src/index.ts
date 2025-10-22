@@ -27,7 +27,7 @@ program
   .command('config')
   .description("Configure your team's leaderboard URL and settings (run this first!)")
   .option('--api-url <url>', "Set the API URL for your team's leaderboard server")
-  .option('--auto-submit <schedule>', 'Enable auto-submit (daily, weekly, off)')
+  .option('--auto-submit <schedule>', 'Enable auto-submit (daily, weekly, frequent, off)')
   .action(configCommand)
 
 program

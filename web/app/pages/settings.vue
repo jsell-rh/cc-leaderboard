@@ -414,8 +414,10 @@
               npx cc-leaderboard config --auto-submit daily
             </code>
             <p class="text-xs text-gray-500 mt-2">
-              This will automatically set up a cron job to submit your usage once per day (or use
-              <code class="bg-gray-100 px-1 rounded">weekly</code> instead)
+              This will automatically set up a cron job to submit your usage once per day. Options:
+              <code class="bg-gray-100 px-1 rounded">daily</code>,
+              <code class="bg-gray-100 px-1 rounded">weekly</code>, or
+              <code class="bg-gray-100 px-1 rounded">frequent</code> (every 10 min)
             </p>
           </div>
         </div>
